@@ -1,0 +1,34 @@
+make [INFO]    : Begin compilation of project "HoodLoader2"...
+
+avr-gcc (GCC) 5.4.0
+Copyright (C) 2015 Free Software Foundation, Inc.
+Dies ist freie Software; die Kopierbedingungen stehen in den Quellen. Es
+gibt KEINE Garantie; auch nicht für MARKTGÄNGIGKEIT oder FÜR SPEZIELLE ZWECKE.
+
+ [LNK]     : Linking object files into "HoodLoader2.elf"
+avr-gcc obj/HoodLoader2.o obj/Descriptors.o obj/BootloaderAPI.o obj/BootloaderAPITable.o obj/HIDParser.o obj/Device_AVR8.o obj/EndpointStream_AVR8.o obj/Endpoint_AVR8.o obj/Host_AVR8.o obj/PipeStream_AVR8.o obj/Pipe_AVR8.o obj/USBController_AVR8.o obj/USBInterrupt_AVR8.o obj/ConfigDescriptors.o obj/DeviceStandardReq.o obj/Events.o obj/HostStandardReq.o obj/USBTask.o -o HoodLoader2.elf -lm -Wl,-Map=HoodLoader2.map,--cref -Wl,--gc-sections -Wl,--relax -mmcu=atmega16u2 -flto -fuse-linker-plugin -Wl,--section-start=.text=0x3000 -Wl,--section-start=.apitable_trampolines=0x3FA0 -Wl,--undefined=BootloaderAPI_Trampolines -Wl,--section-start=.apitable_jumptable=0x3FE0 -Wl,--undefined=BootloaderAPI_JumpTable -Wl,--section-start=.apitable_signatures=0x3FF8 -Wl,--undefined=BootloaderAPI_Signatures,--section-start=.data=0x800282 -ffixed-r2 -ffixed-r3 -ffixed-r4 -ffixed-r5 -ffixed-r6
+ [OBJCPY]  : Extracting HEX file data from "HoodLoader2.elf"
+avr-objcopy -O ihex -R .eeprom -R .fuse -R .lock -R .signature HoodLoader2.elf HoodLoader2.hex
+ [OBJCPY]  : Extracting EEP file data from "HoodLoader2.elf"
+avr-objcopy -O ihex -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 --no-change-warnings HoodLoader2.elf HoodLoader2.eep || exit 0
+ [OBJCPY]  : Extracting BIN file data from "HoodLoader2.elf"
+avr-objcopy -O binary -R .eeprom -R .fuse -R .lock -R .signature HoodLoader2.elf HoodLoader2.bin
+ [OBJDMP]  : Extracting LSS file data from "HoodLoader2.elf"
+avr-objdump -h -d -S -z HoodLoader2.elf > HoodLoader2.lss
+ [NM]      : Extracting SYM file data from "HoodLoader2.elf"
+avr-nm -n HoodLoader2.elf > HoodLoader2.sym
+ [SIZE]    : Determining size of "HoodLoader2.elf"
+
+avr-size --mcu=atmega16u2 --format=avr HoodLoader2.elf
+AVR Memory Usage
+----------------
+Device: atmega16u2
+
+Program:    3950 bytes (24.1% Full)
+(.text + .data + .bootloader)
+
+Data:         33 bytes (6.4% Full)
+(.data + .bss + .noinit)
+
+
+ [INFO]    : Finished building project "HoodLoader2".

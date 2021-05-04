@@ -7,11 +7,11 @@ Archive member included to satisfy reference by file (symbol)
 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libatmega16u2.a(eeupd_byte.o)
                               obj/HoodLoader2.o (symbol from plugin) (eeprom_update_byte)
 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_udivmodsi4.o)
-                              /tmp/ccqf1Lzw.ltrans0.ltrans.o (__udivmodsi4)
+                              /tmp/cc3qaijR.ltrans0.ltrans.o (__udivmodsi4)
 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_copy_data.o)
-                              /tmp/ccqf1Lzw.ltrans0.ltrans.o (__do_copy_data)
+                              /tmp/cc3qaijR.ltrans0.ltrans.o (__do_copy_data)
 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_clear_bss.o)
-                              /tmp/ccqf1Lzw.ltrans0.ltrans.o (__do_clear_bss)
+                              /tmp/cc3qaijR.ltrans0.ltrans.o (__do_clear_bss)
 
 Allocating common symbols
 Common symbol       size              file
@@ -131,7 +131,7 @@ Linker script and memory map
 Adresse des Abschnitts .data gesetzt auf 0x800100
 LOAD /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 LOAD obj/HoodLoader2.o
-LOAD /tmp/ccqf1Lzw.ltrans0.ltrans.o
+LOAD /tmp/cc3qaijR.ltrans0.ltrans.o
 LOAD obj/Descriptors.o
 LOAD obj/BootloaderAPI.o
 LOAD obj/BootloaderAPITable.o
@@ -277,7 +277,7 @@ END GROUP
  *libprintf_flt.a:*(.progmem.data)
  *libc.a:*(.progmem.data)
  *(.progmem*)
- .progmem.data  0x0000000000003074       0x8a /tmp/ccqf1Lzw.ltrans0.ltrans.o
+ .progmem.data  0x0000000000003074       0x8a /tmp/cc3qaijR.ltrans0.ltrans.o
                 0x00000000000030fe                . = ALIGN (0x2)
  *(.jumptables)
  *(.jumptables*)
@@ -301,7 +301,7 @@ END GROUP
  .init2         0x00000000000030fe        0xc /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
  *(.init2)
  *(.init3)
- .init3         0x000000000000310a       0x84 /tmp/ccqf1Lzw.ltrans0.ltrans.o
+ .init3         0x000000000000310a       0x84 /tmp/cc3qaijR.ltrans0.ltrans.o
                 0x000000000000310a                Application_Jump_Check
  *(.init3)
  *(.init4)
@@ -349,7 +349,7 @@ END GROUP
                 0x00000000000031b8                __vector_16
                 0x00000000000031b8                __vector_18
                 0x00000000000031b8                __vector_20
- .text          0x00000000000031ba      0x6b8 /tmp/ccqf1Lzw.ltrans0.ltrans.o
+ .text          0x00000000000031ba      0x6b8 /tmp/cc3qaijR.ltrans0.ltrans.o
                 0x0000000000003362                __vector_11
                 0x0000000000003482                BootloaderAPI_WriteLock
                 0x00000000000034a4                BootloaderAPI_ReadLock
@@ -362,7 +362,7 @@ END GROUP
                 0x0000000000003860                __vector_23
                 0x0000000000003872                . = ALIGN (0x2)
  *(.text.*)
- .text.startup  0x0000000000003872      0x670 /tmp/ccqf1Lzw.ltrans0.ltrans.o
+ .text.startup  0x0000000000003872      0x670 /tmp/cc3qaijR.ltrans0.ltrans.o
                 0x0000000000003872                main
  .text.avr-libc
                 0x0000000000003ee2       0x10 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libatmega16u2.a(eerd_byte.o)
@@ -404,13 +404,13 @@ END GROUP
 .data           0x0000000000800282       0x10 load address 0x0000000000003f5e
                 0x0000000000800282                PROVIDE (__data_start, .)
  *(.data)
- .data          0x0000000000800282        0x8 /tmp/ccqf1Lzw.ltrans0.ltrans.o
+ .data          0x0000000000800282        0x8 /tmp/cc3qaijR.ltrans0.ltrans.o
  *(.data*)
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x000000000080028a        0x8 /tmp/ccqf1Lzw.ltrans0.ltrans.o
+                0x000000000080028a        0x8 /tmp/cc3qaijR.ltrans0.ltrans.o
  *(.gnu.linkonce.r*)
                 0x0000000000800292                . = ALIGN (0x2)
                 0x0000000000800292                _edata = .
@@ -419,7 +419,7 @@ END GROUP
 .bss            0x0000000000800292       0x11
                 0x0000000000800292                PROVIDE (__bss_start, .)
  *(.bss)
- .bss           0x0000000000800292       0x11 /tmp/ccqf1Lzw.ltrans0.ltrans.o
+ .bss           0x0000000000800292       0x11 /tmp/cc3qaijR.ltrans0.ltrans.o
  *(.bss*)
  *(COMMON)
                 0x00000000008002a3                PROVIDE (__bss_end, .)
@@ -472,7 +472,7 @@ END GROUP
 
 .comment        0x0000000000000000       0x11
  *(.comment)
- .comment       0x0000000000000000       0x11 /tmp/ccqf1Lzw.ltrans0.ltrans.o
+ .comment       0x0000000000000000       0x11 /tmp/cc3qaijR.ltrans0.ltrans.o
                                          0x12 (size before relaxing)
 
 .note.gnu.avr.deviceinfo
@@ -503,10 +503,10 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000      0x781
+.debug_info     0x0000000000000000      0x785
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x6ba /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
- .debug_info    0x00000000000006ba       0xc7 obj/BootloaderAPITable.o
+ .debug_info    0x00000000000006ba       0xcb obj/BootloaderAPITable.o
 
 .debug_abbrev   0x0000000000000000      0x66f
  *(.debug_abbrev)
@@ -576,35 +576,35 @@ LOAD linker stubs
 Querverweistabelle
 
 Symbol                                            Datei
-Application_Jump_Check                            /tmp/ccqf1Lzw.ltrans0.ltrans.o
+Application_Jump_Check                            /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_ErasePage                           /tmp/ccqf1Lzw.ltrans0.ltrans.o
+BootloaderAPI_ErasePage                           /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_FillWord                            /tmp/ccqf1Lzw.ltrans0.ltrans.o
+BootloaderAPI_FillWord                            /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
 BootloaderAPI_JumpTable                           obj/BootloaderAPITable.o
-BootloaderAPI_ReadFuse                            /tmp/ccqf1Lzw.ltrans0.ltrans.o
+BootloaderAPI_ReadFuse                            /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_ReadLock                            /tmp/ccqf1Lzw.ltrans0.ltrans.o
+BootloaderAPI_ReadLock                            /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_ReadSignature                       /tmp/ccqf1Lzw.ltrans0.ltrans.o
+BootloaderAPI_ReadSignature                       /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
 BootloaderAPI_Signatures                          obj/BootloaderAPITable.o
 BootloaderAPI_Trampolines                         obj/BootloaderAPITable.o
-BootloaderAPI_WriteLock                           /tmp/ccqf1Lzw.ltrans0.ltrans.o
+BootloaderAPI_WriteLock                           /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_WritePage                           /tmp/ccqf1Lzw.ltrans0.ltrans.o
+BootloaderAPI_WritePage                           /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
@@ -707,17 +707,17 @@ __data_end                                        /usr/lib/gcc/avr/5.4.0/avr35/l
 __data_load_start                                 /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_copy_data.o)
 __data_start                                      /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_copy_data.o)
 __do_clear_bss                                    /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_clear_bss.o)
-                                                  /tmp/ccqf1Lzw.ltrans0.ltrans.o
+                                                  /tmp/cc3qaijR.ltrans0.ltrans.o
 __do_copy_data                                    /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_copy_data.o)
-                                                  /tmp/ccqf1Lzw.ltrans0.ltrans.o
+                                                  /tmp/cc3qaijR.ltrans0.ltrans.o
 __heap_end                                        /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 __init                                            /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 __stack                                           /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 __udivmodsi4                                      /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_udivmodsi4.o)
-                                                  /tmp/ccqf1Lzw.ltrans0.ltrans.o
+                                                  /tmp/cc3qaijR.ltrans0.ltrans.o
 __vector_1                                        /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 __vector_10                                       /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
-__vector_11                                       /tmp/ccqf1Lzw.ltrans0.ltrans.o
+__vector_11                                       /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/USBInterrupt_AVR8.o (symbol from plugin)
                                                   /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 __vector_12                                       /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
@@ -732,10 +732,10 @@ __vector_2                                        /usr/lib/gcc/avr/5.4.0/../../.
 __vector_20                                       /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 __vector_21                                       /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 __vector_22                                       /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
-__vector_23                                       /tmp/ccqf1Lzw.ltrans0.ltrans.o
+__vector_23                                       /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/HoodLoader2.o (symbol from plugin)
                                                   /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
-__vector_24                                       /tmp/ccqf1Lzw.ltrans0.ltrans.o
+__vector_24                                       /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/HoodLoader2.o (symbol from plugin)
                                                   /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 __vector_25                                       /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
@@ -753,16 +753,16 @@ __vector_default                                  /usr/lib/gcc/avr/5.4.0/../../.
 __vectors                                         /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
 _exit                                             /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_exit.o)
 eeprom_read_byte                                  /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libatmega16u2.a(eerd_byte.o)
-                                                  /tmp/ccqf1Lzw.ltrans0.ltrans.o
+                                                  /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/EndpointStream_AVR8.o (symbol from plugin)
                                                   obj/HoodLoader2.o (symbol from plugin)
 eeprom_update_byte                                /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libatmega16u2.a(eeupd_byte.o)
-                                                  /tmp/ccqf1Lzw.ltrans0.ltrans.o
+                                                  /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/EndpointStream_AVR8.o (symbol from plugin)
                                                   obj/HoodLoader2.o (symbol from plugin)
 eeprom_update_r18                                 /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/libatmega16u2.a(eeupd_byte.o)
 exit                                              /usr/lib/gcc/avr/5.4.0/avr35/libgcc.a(_exit.o)
                                                   /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
-main                                              /tmp/ccqf1Lzw.ltrans0.ltrans.o
+main                                              /tmp/cc3qaijR.ltrans0.ltrans.o
                                                   obj/HoodLoader2.o (symbol from plugin)
                                                   /usr/lib/gcc/avr/5.4.0/../../../avr/lib/avr35/crtatmega16u2.o
