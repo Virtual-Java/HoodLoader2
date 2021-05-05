@@ -29,7 +29,7 @@ LTO          = Y
 # match the target's total FLASH size and the bootloader size set in the
 # device's fuses.
 FLASH_SIZE_KB         = 16
-BOOT_SECTION_SIZE_KB  = 4
+BOOT_SECTION_SIZE_KB  = 5
 
 #define LUFA_VID					0x03EB
 #define LUFA_PID					0x204A
