@@ -7,101 +7,101 @@ Archive member included to satisfy reference by file (symbol)
 /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/libatmega16u2.a(eeupd_byte.o)
                               obj/HoodLoader2.o (symbol from plugin) (eeprom_update_byte)
 /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_udivmodsi4.o)
-                              /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o (__udivmodsi4)
+                              /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o (__udivmodsi4)
 /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_copy_data.o)
-                              /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o (__do_copy_data)
+                              /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o (__do_copy_data)
 /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_clear_bss.o)
-                              /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o (__do_clear_bss)
+                              /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o (__do_clear_bss)
 
 Discarded input sections
 
  .data          0x0000000000000000        0x0 /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
  .bss           0x0000000000000000        0x0 /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
- .debug_info    0x0000000000000000      0x939 /tmp/cc34R0yU.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x264 /tmp/cc34R0yU.debug.temp.o
- .debug_line    0x0000000000000000      0x247 /tmp/cc34R0yU.debug.temp.o
- .debug_str     0x0000000000000000      0xea8 /tmp/cc34R0yU.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/cc34R0yU.debug.temp.o
- .debug_info    0x0000000000000000      0x71a /tmp/ccagvDND.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x126 /tmp/ccagvDND.debug.temp.o
- .debug_line    0x0000000000000000      0x116 /tmp/ccagvDND.debug.temp.o
- .debug_str     0x0000000000000000      0x9c3 /tmp/ccagvDND.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccagvDND.debug.temp.o
- .debug_info    0x0000000000000000      0x205 /tmp/ccB08Vpm.debug.temp.o
- .debug_abbrev  0x0000000000000000       0xc1 /tmp/ccB08Vpm.debug.temp.o
- .debug_line    0x0000000000000000       0x6f /tmp/ccB08Vpm.debug.temp.o
- .debug_str     0x0000000000000000      0x375 /tmp/ccB08Vpm.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccB08Vpm.debug.temp.o
- .debug_info    0x0000000000000000      0x66f /tmp/ccUoH91b.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x1a3 /tmp/ccUoH91b.debug.temp.o
- .debug_line    0x0000000000000000       0x92 /tmp/ccUoH91b.debug.temp.o
- .debug_str     0x0000000000000000      0x778 /tmp/ccUoH91b.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccUoH91b.debug.temp.o
- .debug_info    0x0000000000000000       0x95 /tmp/ccQMG2Oq.debug.temp.o
- .debug_abbrev  0x0000000000000000       0x66 /tmp/ccQMG2Oq.debug.temp.o
- .debug_line    0x0000000000000000       0xb9 /tmp/ccQMG2Oq.debug.temp.o
- .debug_str     0x0000000000000000      0x2db /tmp/ccQMG2Oq.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccQMG2Oq.debug.temp.o
- .debug_info    0x0000000000000000      0xac3 /tmp/ccAqiye5.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x141 /tmp/ccAqiye5.debug.temp.o
- .debug_line    0x0000000000000000      0x1d9 /tmp/ccAqiye5.debug.temp.o
- .debug_str     0x0000000000000000      0x8f1 /tmp/ccAqiye5.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccAqiye5.debug.temp.o
- .debug_info    0x0000000000000000      0x3ac /tmp/ccRGet7N.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x165 /tmp/ccRGet7N.debug.temp.o
- .debug_line    0x0000000000000000      0x1bf /tmp/ccRGet7N.debug.temp.o
- .debug_str     0x0000000000000000      0x6ca /tmp/ccRGet7N.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccRGet7N.debug.temp.o
- .debug_info    0x0000000000000000       0x56 /tmp/ccrLNG4k.debug.temp.o
- .debug_abbrev  0x0000000000000000       0x26 /tmp/ccrLNG4k.debug.temp.o
- .debug_line    0x0000000000000000       0x1d /tmp/ccrLNG4k.debug.temp.o
- .debug_str     0x0000000000000000      0x283 /tmp/ccrLNG4k.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccrLNG4k.debug.temp.o
- .debug_info    0x0000000000000000       0x56 /tmp/ccjdMZez.debug.temp.o
- .debug_abbrev  0x0000000000000000       0x26 /tmp/ccjdMZez.debug.temp.o
- .debug_line    0x0000000000000000       0x1d /tmp/ccjdMZez.debug.temp.o
- .debug_str     0x0000000000000000      0x289 /tmp/ccjdMZez.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccjdMZez.debug.temp.o
- .debug_info    0x0000000000000000       0x56 /tmp/cckIFmI7.debug.temp.o
- .debug_abbrev  0x0000000000000000       0x26 /tmp/cckIFmI7.debug.temp.o
- .debug_line    0x0000000000000000       0x1d /tmp/cckIFmI7.debug.temp.o
- .debug_str     0x0000000000000000      0x283 /tmp/cckIFmI7.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/cckIFmI7.debug.temp.o
- .debug_info    0x0000000000000000      0x274 /tmp/ccGNK0g1.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x105 /tmp/ccGNK0g1.debug.temp.o
- .debug_line    0x0000000000000000      0x1ac /tmp/ccGNK0g1.debug.temp.o
- .debug_str     0x0000000000000000      0x56d /tmp/ccGNK0g1.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccGNK0g1.debug.temp.o
- .debug_info    0x0000000000000000      0x264 /tmp/ccYbXZCG.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x122 /tmp/ccYbXZCG.debug.temp.o
- .debug_line    0x0000000000000000      0x1b9 /tmp/ccYbXZCG.debug.temp.o
- .debug_str     0x0000000000000000      0x525 /tmp/ccYbXZCG.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccYbXZCG.debug.temp.o
- .debug_info    0x0000000000000000      0x28d /tmp/cc1dardG.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x123 /tmp/cc1dardG.debug.temp.o
- .debug_line    0x0000000000000000       0xc0 /tmp/cc1dardG.debug.temp.o
- .debug_str     0x0000000000000000      0x4c9 /tmp/cc1dardG.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/cc1dardG.debug.temp.o
- .debug_info    0x0000000000000000      0x3c7 /tmp/cc42r2OT.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x174 /tmp/cc42r2OT.debug.temp.o
- .debug_line    0x0000000000000000      0x128 /tmp/cc42r2OT.debug.temp.o
- .debug_str     0x0000000000000000      0x79c /tmp/cc42r2OT.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/cc42r2OT.debug.temp.o
- .debug_info    0x0000000000000000       0xb0 /tmp/ccC0npXU.debug.temp.o
- .debug_abbrev  0x0000000000000000       0x6f /tmp/ccC0npXU.debug.temp.o
- .debug_line    0x0000000000000000       0x64 /tmp/ccC0npXU.debug.temp.o
- .debug_str     0x0000000000000000      0x2b4 /tmp/ccC0npXU.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccC0npXU.debug.temp.o
- .debug_info    0x0000000000000000       0x56 /tmp/ccaItPUS.debug.temp.o
- .debug_abbrev  0x0000000000000000       0x26 /tmp/ccaItPUS.debug.temp.o
- .debug_line    0x0000000000000000       0x1d /tmp/ccaItPUS.debug.temp.o
- .debug_str     0x0000000000000000      0x284 /tmp/ccaItPUS.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccaItPUS.debug.temp.o
- .debug_info    0x0000000000000000      0x1ab /tmp/ccWIROCq.debug.temp.o
- .debug_abbrev  0x0000000000000000      0x114 /tmp/ccWIROCq.debug.temp.o
- .debug_line    0x0000000000000000       0xf6 /tmp/ccWIROCq.debug.temp.o
- .debug_str     0x0000000000000000      0x431 /tmp/ccWIROCq.debug.temp.o
- .comment       0x0000000000000000       0x13 /tmp/ccWIROCq.debug.temp.o
+ .debug_info    0x0000000000000000      0x939 /tmp/cc1PGyh6.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x264 /tmp/cc1PGyh6.debug.temp.o
+ .debug_line    0x0000000000000000      0x247 /tmp/cc1PGyh6.debug.temp.o
+ .debug_str     0x0000000000000000      0xea8 /tmp/cc1PGyh6.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cc1PGyh6.debug.temp.o
+ .debug_info    0x0000000000000000      0x71a /tmp/ccI5pICN.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x126 /tmp/ccI5pICN.debug.temp.o
+ .debug_line    0x0000000000000000      0x116 /tmp/ccI5pICN.debug.temp.o
+ .debug_str     0x0000000000000000      0x9c3 /tmp/ccI5pICN.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccI5pICN.debug.temp.o
+ .debug_info    0x0000000000000000      0x205 /tmp/ccqZzwjl.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0xc1 /tmp/ccqZzwjl.debug.temp.o
+ .debug_line    0x0000000000000000       0x6f /tmp/ccqZzwjl.debug.temp.o
+ .debug_str     0x0000000000000000      0x375 /tmp/ccqZzwjl.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccqZzwjl.debug.temp.o
+ .debug_info    0x0000000000000000      0x66f /tmp/cc1ibgfl.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x1a3 /tmp/cc1ibgfl.debug.temp.o
+ .debug_line    0x0000000000000000       0x92 /tmp/cc1ibgfl.debug.temp.o
+ .debug_str     0x0000000000000000      0x778 /tmp/cc1ibgfl.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cc1ibgfl.debug.temp.o
+ .debug_info    0x0000000000000000       0x95 /tmp/ccjt0cyo.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0x66 /tmp/ccjt0cyo.debug.temp.o
+ .debug_line    0x0000000000000000       0xb9 /tmp/ccjt0cyo.debug.temp.o
+ .debug_str     0x0000000000000000      0x2db /tmp/ccjt0cyo.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccjt0cyo.debug.temp.o
+ .debug_info    0x0000000000000000      0xac3 /tmp/cczCvydT.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x141 /tmp/cczCvydT.debug.temp.o
+ .debug_line    0x0000000000000000      0x1d9 /tmp/cczCvydT.debug.temp.o
+ .debug_str     0x0000000000000000      0x8f1 /tmp/cczCvydT.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cczCvydT.debug.temp.o
+ .debug_info    0x0000000000000000      0x3ac /tmp/cc7RP6WC.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x165 /tmp/cc7RP6WC.debug.temp.o
+ .debug_line    0x0000000000000000      0x1bf /tmp/cc7RP6WC.debug.temp.o
+ .debug_str     0x0000000000000000      0x6ca /tmp/cc7RP6WC.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cc7RP6WC.debug.temp.o
+ .debug_info    0x0000000000000000       0x56 /tmp/ccHfmCt6.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0x26 /tmp/ccHfmCt6.debug.temp.o
+ .debug_line    0x0000000000000000       0x1d /tmp/ccHfmCt6.debug.temp.o
+ .debug_str     0x0000000000000000      0x283 /tmp/ccHfmCt6.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccHfmCt6.debug.temp.o
+ .debug_info    0x0000000000000000       0x56 /tmp/ccHvwHK6.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0x26 /tmp/ccHvwHK6.debug.temp.o
+ .debug_line    0x0000000000000000       0x1d /tmp/ccHvwHK6.debug.temp.o
+ .debug_str     0x0000000000000000      0x289 /tmp/ccHvwHK6.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccHvwHK6.debug.temp.o
+ .debug_info    0x0000000000000000       0x56 /tmp/ccPKiKrY.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0x26 /tmp/ccPKiKrY.debug.temp.o
+ .debug_line    0x0000000000000000       0x1d /tmp/ccPKiKrY.debug.temp.o
+ .debug_str     0x0000000000000000      0x283 /tmp/ccPKiKrY.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccPKiKrY.debug.temp.o
+ .debug_info    0x0000000000000000      0x274 /tmp/cca7QOPw.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x105 /tmp/cca7QOPw.debug.temp.o
+ .debug_line    0x0000000000000000      0x1ac /tmp/cca7QOPw.debug.temp.o
+ .debug_str     0x0000000000000000      0x56d /tmp/cca7QOPw.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cca7QOPw.debug.temp.o
+ .debug_info    0x0000000000000000      0x264 /tmp/ccyxCXxx.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x122 /tmp/ccyxCXxx.debug.temp.o
+ .debug_line    0x0000000000000000      0x1b9 /tmp/ccyxCXxx.debug.temp.o
+ .debug_str     0x0000000000000000      0x525 /tmp/ccyxCXxx.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccyxCXxx.debug.temp.o
+ .debug_info    0x0000000000000000      0x28d /tmp/ccdbAbdR.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x123 /tmp/ccdbAbdR.debug.temp.o
+ .debug_line    0x0000000000000000       0xc0 /tmp/ccdbAbdR.debug.temp.o
+ .debug_str     0x0000000000000000      0x4c9 /tmp/ccdbAbdR.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccdbAbdR.debug.temp.o
+ .debug_info    0x0000000000000000      0x3c7 /tmp/ccJpQqLJ.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x174 /tmp/ccJpQqLJ.debug.temp.o
+ .debug_line    0x0000000000000000      0x128 /tmp/ccJpQqLJ.debug.temp.o
+ .debug_str     0x0000000000000000      0x79c /tmp/ccJpQqLJ.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccJpQqLJ.debug.temp.o
+ .debug_info    0x0000000000000000       0xb0 /tmp/cc652XDP.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0x6f /tmp/cc652XDP.debug.temp.o
+ .debug_line    0x0000000000000000       0x64 /tmp/cc652XDP.debug.temp.o
+ .debug_str     0x0000000000000000      0x2b4 /tmp/cc652XDP.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cc652XDP.debug.temp.o
+ .debug_info    0x0000000000000000       0x56 /tmp/ccTNrJxU.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0x26 /tmp/ccTNrJxU.debug.temp.o
+ .debug_line    0x0000000000000000       0x1d /tmp/ccTNrJxU.debug.temp.o
+ .debug_str     0x0000000000000000      0x284 /tmp/ccTNrJxU.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccTNrJxU.debug.temp.o
+ .debug_info    0x0000000000000000      0x1ab /tmp/ccJAvtmS.debug.temp.o
+ .debug_abbrev  0x0000000000000000      0x114 /tmp/ccJAvtmS.debug.temp.o
+ .debug_line    0x0000000000000000       0xf6 /tmp/ccJAvtmS.debug.temp.o
+ .debug_str     0x0000000000000000      0x431 /tmp/ccJAvtmS.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccJAvtmS.debug.temp.o
  .text          0x0000000000000000        0x0 obj/BootloaderAPITable.o
  .data          0x0000000000000000        0x0 obj/BootloaderAPITable.o
  .bss           0x0000000000000000        0x0 obj/BootloaderAPITable.o
@@ -191,24 +191,24 @@ Linker script and memory map
 Address of section .data set to 0x800100
 LOAD /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 LOAD obj/HoodLoader2.o
-LOAD /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
-LOAD /tmp/cc34R0yU.debug.temp.o
-LOAD /tmp/ccagvDND.debug.temp.o
-LOAD /tmp/ccB08Vpm.debug.temp.o
-LOAD /tmp/ccUoH91b.debug.temp.o
-LOAD /tmp/ccQMG2Oq.debug.temp.o
-LOAD /tmp/ccAqiye5.debug.temp.o
-LOAD /tmp/ccRGet7N.debug.temp.o
-LOAD /tmp/ccrLNG4k.debug.temp.o
-LOAD /tmp/ccjdMZez.debug.temp.o
-LOAD /tmp/cckIFmI7.debug.temp.o
-LOAD /tmp/ccGNK0g1.debug.temp.o
-LOAD /tmp/ccYbXZCG.debug.temp.o
-LOAD /tmp/cc1dardG.debug.temp.o
-LOAD /tmp/cc42r2OT.debug.temp.o
-LOAD /tmp/ccC0npXU.debug.temp.o
-LOAD /tmp/ccaItPUS.debug.temp.o
-LOAD /tmp/ccWIROCq.debug.temp.o
+LOAD /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
+LOAD /tmp/cc1PGyh6.debug.temp.o
+LOAD /tmp/ccI5pICN.debug.temp.o
+LOAD /tmp/ccqZzwjl.debug.temp.o
+LOAD /tmp/cc1ibgfl.debug.temp.o
+LOAD /tmp/ccjt0cyo.debug.temp.o
+LOAD /tmp/cczCvydT.debug.temp.o
+LOAD /tmp/cc7RP6WC.debug.temp.o
+LOAD /tmp/ccHfmCt6.debug.temp.o
+LOAD /tmp/ccHvwHK6.debug.temp.o
+LOAD /tmp/ccPKiKrY.debug.temp.o
+LOAD /tmp/cca7QOPw.debug.temp.o
+LOAD /tmp/ccyxCXxx.debug.temp.o
+LOAD /tmp/ccdbAbdR.debug.temp.o
+LOAD /tmp/ccJpQqLJ.debug.temp.o
+LOAD /tmp/cc652XDP.debug.temp.o
+LOAD /tmp/ccTNrJxU.debug.temp.o
+LOAD /tmp/ccJAvtmS.debug.temp.o
 LOAD obj/Descriptors.o
 LOAD obj/BootloaderAPI.o
 LOAD obj/BootloaderAPITable.o
@@ -352,7 +352,7 @@ END GROUP
  *libprintf_flt.a:*(.progmem.data)
  *libc.a:*(.progmem.data)
  *(.progmem.*)
- .progmem.data  0x0000000000003074       0x8a /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .progmem.data  0x0000000000003074       0x8a /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                 0x00000000000030fe                . = ALIGN (0x2)
  *(.lowtext)
  *(.lowtext*)
@@ -374,7 +374,7 @@ END GROUP
  .init2         0x00000000000030fe        0xc /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
  *(.init2)
  *(.init3)
- .init3         0x000000000000310a       0x84 /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .init3         0x000000000000310a       0x84 /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                 0x000000000000310a                Application_Jump_Check
  *(.init3)
  *(.init4)
@@ -422,7 +422,7 @@ END GROUP
                 0x00000000000031b8                __vector_16
                 0x00000000000031b8                __vector_18
                 0x00000000000031b8                __vector_20
- .text          0x00000000000031ba      0x768 /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .text          0x00000000000031ba      0x768 /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                 0x000000000000338c                __vector_23
                 0x000000000000339e                __vector_24
                 0x00000000000033c4                BootloaderAPI_ReadFuse
@@ -435,7 +435,7 @@ END GROUP
                 0x0000000000003802                __vector_11
                 0x0000000000003922                . = ALIGN (0x2)
  *(.text.*)
- .text.startup  0x0000000000003922      0x66c /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .text.startup  0x0000000000003922      0x66c /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                 0x0000000000003922                main
  .text.libgcc.div
                 0x0000000000003f8e       0x44 /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_udivmodsi4.o)
@@ -483,13 +483,13 @@ END GROUP
 .data           0x0000000000800282       0x10 load address 0x000000000000400a
                 0x0000000000800282                PROVIDE (__data_start = .)
  *(.data)
- .data          0x0000000000800282        0x8 /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .data          0x0000000000800282        0x8 /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
  *(.data*)
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x000000000080028a        0x8 /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+                0x000000000080028a        0x8 /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
  *(.gnu.linkonce.r*)
                 0x0000000000800292                . = ALIGN (0x2)
                 0x0000000000800292                _edata = .
@@ -498,7 +498,7 @@ END GROUP
 .bss            0x0000000000800292       0x11
                 0x0000000000800292                PROVIDE (__bss_start = .)
  *(.bss)
- .bss           0x0000000000800292       0x11 /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .bss           0x0000000000800292       0x11 /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
  *(.bss*)
  *(COMMON)
                 0x00000000008002a3                PROVIDE (__bss_end = .)
@@ -530,11 +530,11 @@ END GROUP
 
 .stab           0x0000000000000000     0x3330
  *(.stab)
- .stab          0x0000000000000000     0x3330 /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .stab          0x0000000000000000     0x3330 /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
 
 .stabstr        0x0000000000000000      0xdc8
  *(.stabstr)
- .stabstr       0x0000000000000000      0xdc8 /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .stabstr       0x0000000000000000      0xdc8 /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
 
 .stab.excl
  *(.stab.excl)
@@ -550,7 +550,7 @@ END GROUP
 
 .comment        0x0000000000000000       0x12
  *(.comment)
- .comment       0x0000000000000000       0x12 /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+ .comment       0x0000000000000000       0x12 /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                          0x13 (size before relaxing)
 
 .note.gnu.avr.deviceinfo
@@ -676,48 +676,48 @@ LOAD linker stubs
 Cross Reference Table
 
 Symbol                                            File
-Application_Jump_Check                            /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+Application_Jump_Check                            /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI.c.520d24ae                          /tmp/ccB08Vpm.debug.temp.o
-BootloaderAPI_ErasePage                           /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+BootloaderAPI.c.520d24ae                          /tmp/ccqZzwjl.debug.temp.o
+BootloaderAPI_ErasePage                           /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_FillWord                            /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+BootloaderAPI_FillWord                            /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
 BootloaderAPI_JumpTable                           obj/BootloaderAPITable.o
-BootloaderAPI_ReadFuse                            /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+BootloaderAPI_ReadFuse                            /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_ReadLock                            /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+BootloaderAPI_ReadLock                            /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_ReadSignature                       /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+BootloaderAPI_ReadSignature                       /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
 BootloaderAPI_Signatures                          obj/BootloaderAPITable.o
 BootloaderAPI_Trampolines                         obj/BootloaderAPITable.o
-BootloaderAPI_WriteLock                           /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+BootloaderAPI_WriteLock                           /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
-BootloaderAPI_WritePage                           /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+BootloaderAPI_WritePage                           /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/BootloaderAPI.o (symbol from plugin)
                                                   obj/BootloaderAPITable.o
                                                   obj/HoodLoader2.o (symbol from plugin)
 CALLBACK_HIDParser_FilterHIDReportItem            obj/HIDParser.o (symbol from plugin)
 CALLBACK_USB_GetDescriptor                        obj/Descriptors.o (symbol from plugin)
                                                   obj/DeviceStandardReq.o (symbol from plugin)
-ConfigDescriptors.c.e2f18b07                      /tmp/cc1dardG.debug.temp.o
+ConfigDescriptors.c.e2f18b07                      /tmp/ccdbAbdR.debug.temp.o
 ConfigurationDescriptor                           obj/Descriptors.o (symbol from plugin)
-Descriptors.c.658a3a50                            /tmp/ccagvDND.debug.temp.o
+Descriptors.c.658a3a50                            /tmp/ccI5pICN.debug.temp.o
 DeviceDescriptor                                  obj/Descriptors.o (symbol from plugin)
-DeviceStandardReq.c.e6cdcab1                      /tmp/cc42r2OT.debug.temp.o
-Device_AVR8.c.6baba40d                            /tmp/ccQMG2Oq.debug.temp.o
+DeviceStandardReq.c.e6cdcab1                      /tmp/ccJpQqLJ.debug.temp.o
+Device_AVR8.c.6baba40d                            /tmp/ccjt0cyo.debug.temp.o
 EVENT_USB_Device_ConfigurationChanged             obj/HoodLoader2.o (symbol from plugin)
                                                   obj/DeviceStandardReq.o (symbol from plugin)
 EVENT_USB_Device_Connect                          obj/Events.o (symbol from plugin)
@@ -731,8 +731,8 @@ EVENT_USB_Device_Reset                            obj/Events.o (symbol from plug
 EVENT_USB_Device_StartOfFrame                     obj/Events.o (symbol from plugin)
 EVENT_USB_Device_Suspend                          obj/Events.o (symbol from plugin)
 EVENT_USB_Device_WakeUp                           obj/Events.o (symbol from plugin)
-EndpointStream_AVR8.c.1efb5fd3                    /tmp/ccAqiye5.debug.temp.o
-Endpoint_AVR8.c.b830953b                          /tmp/ccRGet7N.debug.temp.o
+EndpointStream_AVR8.c.1efb5fd3                    /tmp/cczCvydT.debug.temp.o
+Endpoint_AVR8.c.b830953b                          /tmp/cc7RP6WC.debug.temp.o
 Endpoint_ClearEndpoints                           obj/Endpoint_AVR8.o (symbol from plugin)
 Endpoint_ClearStatusStage                         obj/Endpoint_AVR8.o (symbol from plugin)
                                                   obj/DeviceStandardReq.o (symbol from plugin)
@@ -768,19 +768,19 @@ Endpoint_Write_PStream_BE                         obj/EndpointStream_AVR8.o (sym
 Endpoint_Write_PStream_LE                         obj/EndpointStream_AVR8.o (symbol from plugin)
 Endpoint_Write_Stream_BE                          obj/EndpointStream_AVR8.o (symbol from plugin)
 Endpoint_Write_Stream_LE                          obj/EndpointStream_AVR8.o (symbol from plugin)
-Events.c.f1d0d911                                 /tmp/ccC0npXU.debug.temp.o
-HIDParser.c.67a47ad2                              /tmp/ccUoH91b.debug.temp.o
-HoodLoader2.c.26772a71                            /tmp/cc34R0yU.debug.temp.o
-HostStandardReq.c.1b8cbb02                        /tmp/ccaItPUS.debug.temp.o
-Host_AVR8.c.8a2d60f2                              /tmp/ccrLNG4k.debug.temp.o
+Events.c.f1d0d911                                 /tmp/cc652XDP.debug.temp.o
+HIDParser.c.67a47ad2                              /tmp/cc1ibgfl.debug.temp.o
+HoodLoader2.c.26772a71                            /tmp/cc1PGyh6.debug.temp.o
+HostStandardReq.c.1b8cbb02                        /tmp/ccTNrJxU.debug.temp.o
+Host_AVR8.c.8a2d60f2                              /tmp/ccHfmCt6.debug.temp.o
 LanguageString                                    obj/Descriptors.o (symbol from plugin)
 ManufacturerString                                obj/Descriptors.o (symbol from plugin)
-PipeStream_AVR8.c.58d652c2                        /tmp/ccjdMZez.debug.temp.o
-Pipe_AVR8.c.837850e6                              /tmp/cckIFmI7.debug.temp.o
+PipeStream_AVR8.c.58d652c2                        /tmp/ccHvwHK6.debug.temp.o
+Pipe_AVR8.c.837850e6                              /tmp/ccPKiKrY.debug.temp.o
 ProductString                                     obj/Descriptors.o (symbol from plugin)
-USBController_AVR8.c.ee3f894c                     /tmp/ccGNK0g1.debug.temp.o
-USBInterrupt_AVR8.c.80a53cff                      /tmp/ccYbXZCG.debug.temp.o
-USBTask.c.cb9d50f0                                /tmp/ccWIROCq.debug.temp.o
+USBController_AVR8.c.ee3f894c                     /tmp/cca7QOPw.debug.temp.o
+USBInterrupt_AVR8.c.80a53cff                      /tmp/ccyxCXxx.debug.temp.o
+USBTask.c.cb9d50f0                                /tmp/ccJAvtmS.debug.temp.o
 USB_ControlRequest                                obj/USBTask.o (symbol from plugin)
                                                   obj/DeviceStandardReq.o (symbol from plugin)
                                                   obj/Endpoint_AVR8.o (symbol from plugin)
@@ -823,17 +823,17 @@ __data_end                                        /usr/lib/gcc/avr/10.3.0/avr35/
 __data_load_start                                 /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_copy_data.o)
 __data_start                                      /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_copy_data.o)
 __do_clear_bss                                    /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_clear_bss.o)
-                                                  /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+                                                  /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
 __do_copy_data                                    /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_copy_data.o)
-                                                  /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+                                                  /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
 __heap_end                                        /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 __init                                            /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 __stack                                           /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 __udivmodsi4                                      /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_udivmodsi4.o)
-                                                  /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+                                                  /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
 __vector_1                                        /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 __vector_10                                       /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
-__vector_11                                       /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+__vector_11                                       /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/USBInterrupt_AVR8.o (symbol from plugin)
                                                   /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 __vector_12                                       /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
@@ -848,10 +848,10 @@ __vector_2                                        /usr/lib/gcc/avr/10.3.0/../../
 __vector_20                                       /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 __vector_21                                       /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 __vector_22                                       /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
-__vector_23                                       /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+__vector_23                                       /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/HoodLoader2.o (symbol from plugin)
                                                   /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
-__vector_24                                       /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+__vector_24                                       /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/HoodLoader2.o (symbol from plugin)
                                                   /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 __vector_25                                       /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
@@ -869,16 +869,16 @@ __vector_default                                  /usr/lib/gcc/avr/10.3.0/../../
 __vectors                                         /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
 _exit                                             /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_exit.o)
 eeprom_read_byte                                  /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/libatmega16u2.a(eerd_byte.o)
-                                                  /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+                                                  /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/EndpointStream_AVR8.o (symbol from plugin)
                                                   obj/HoodLoader2.o (symbol from plugin)
 eeprom_update_byte                                /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/libatmega16u2.a(eeupd_byte.o)
-                                                  /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+                                                  /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/EndpointStream_AVR8.o (symbol from plugin)
                                                   obj/HoodLoader2.o (symbol from plugin)
 eeprom_update_r18                                 /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/libatmega16u2.a(eeupd_byte.o)
 exit                                              /usr/lib/gcc/avr/10.3.0/avr35/libgcc.a(_exit.o)
                                                   /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
-main                                              /tmp/HoodLoader2.elf.hQAjx8.ltrans0.ltrans.o
+main                                              /tmp/HoodLoader2.elf.D7ZdxP.ltrans0.ltrans.o
                                                   obj/HoodLoader2.o (symbol from plugin)
                                                   /usr/lib/gcc/avr/10.3.0/../../../../avr/lib/avr35/crtatmega16u2.o
