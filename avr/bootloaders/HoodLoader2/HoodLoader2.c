@@ -65,7 +65,6 @@ static CDC_LineEncoding_t LineEncoding = { .BaudRateBPS = 0,
 	.DataBits = 8
 };
 
-
 /* NOTE: Using Linker Magic,
 * - Reserved 256 bytes from start of RAM at 0x100 for UART RX Buffer
 * so we can use 256-byte aligned addresssing.
