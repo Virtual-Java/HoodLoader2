@@ -11,7 +11,7 @@
 
 # Run "make help" for target help.
 
-MCU          = atmega16u2
+MCU          = atmega32u4
 ARCH         = AVR8
 BOARD        = USER
 F_CPU        = 16000000
@@ -28,7 +28,7 @@ LTO          = Y
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
 # device's fuses.
-FLASH_SIZE_KB         = 16
+FLASH_SIZE_KB         = 32
 BOOT_SECTION_SIZE_KB  = 4
 
 #define LUFA_VID					0x03EB
@@ -43,7 +43,7 @@ BOOT_SECTION_SIZE_KB  = 4
 #define ARDUINO_DUE_PID             0x003D
 
 HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
-HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID
+HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_MICRO_PID
 
 # 1200 is the baud to load the Bootloader from an Arduino sketch,
 # 57600 turns out to be the actual baud rate for uploading for default arduino bootloaders (and arduino nano by default!)

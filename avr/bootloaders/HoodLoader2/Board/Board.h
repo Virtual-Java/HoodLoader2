@@ -28,6 +28,7 @@ extern "C" {
 
 
 /**  Arduino modification to support DebugWire
+*  Due to SoftwareReset it is possible to remove the
 *  Capacitor between DTR (pin 20) of USB MCU and RESET pin (PB6) of main MCU
 *  Besides it enables ISP programming without capacitor 
 *  between main MCU's RESET and GND
@@ -35,6 +36,24 @@ extern "C" {
 *  and the best thing is it doesn't affect upload to Arduinos with capacitor!
 */
 #define USING_SOFTWARE_RESET
+
+/**  Hoodloader modification to support MultiBoot
+*  MULTIHOODLOADER supports multiple IO MCUs to be bootloaded
+*
+*  The device to bootload is selected by an 8-bit wide address (0 to 255)
+*  The reset pin of the target is either selected directly via one pin (on PortB),
+*  therefore a maximum of 8 targets is possible to address.
+*
+*  To support up to 255 devices an address decoder(74HC138/74HC238), 
+*  decoder with latch (74HC137/74HC237) or for best performance an 
+*  (digital/analog) demultiplexer (HEF4051B/74HC4051).
+*
+*  When more than 8 outputs are desired a 16-channel multiplexer 
+*  (HEF4067/74HC4067) can be used instead, but usually it is more
+*  flexible and cheaper to chain multiple ICs taking inverters (HEF4007,HEF4049,HEF4069/
+*  74HC04/74HC14/74HC4049)
+*/
+//#define MULTIHOODLOADER
 
 /**  Arduino modification to support DebugWire
 *  Mosfet soldered between +5V and the output of the voltage regulator 
@@ -44,8 +63,8 @@ extern "C" {
 *  and doesn't affect standard Arduinos at all!
 */
 #define WITH_VCC_ENABLE
- #define VCCEN_ACTIVE_HIGH  false // false (default) for p-ch Mosfet (recommanded)
- // change this to true for n-ch Mosfet (tricky to use because of inflated GS-Voltage)
+//  #define VCCEN_ACTIVE_HIGH  false // false (default) for p-ch Mosfet (recommanded)
+  // change this to true for n-ch Mosfet (tricky to use because of inflated GS-Voltage)
 
 	/* Includes: */
 		#include <LUFA/Common/Common.h>
@@ -121,6 +140,20 @@ extern "C" {
    #define AVR_VCCEN_LINE_MASK  (1 << PC4)
   #endif
 
+   /* Pins used to address the target MCU */
+  #ifdef MULTIHOODLOADER
+   #define MHL_SEL_PORT PORTB
+   #define MHL_SEL_DDR DDRB
+   #define MHL_SEL_PIN PINB
+   #define MHL_SEL_MASK (1 << PB5) | (1 << PB6) | (1 << PB7)
+   #define MHL_SEL_ADDR 0x1A  // a reserved IO register location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
+
+   #define MHL_EN_PORT PORTB
+   #define MHL_EN_DDR DDRB
+   #define MHL_EN_PIN PINB
+   #define MHL_EN_MASK (1 << PB4) // Multiplexer enable input pin
+  #endif
+
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
@@ -133,6 +166,11 @@ extern "C" {
      #else
       AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK;
      #endif
+    #endif
+
+    /* set address pins to output */
+    #ifdef MULTIHOODLOADER
+     MHL_SEL_DDR |= MHL_SEL_MASK;
     #endif
 
 				// On Due reset and erase pins are on PortC instead of PortD
@@ -153,6 +191,9 @@ extern "C" {
 			{
     /* Target /RESET line  */
 				if (reset) {
+     #ifdef MULTIHOODLOADER
+      MHL_SEL_PORT = (*(volatile uint8_t *)(MHL_SEL_ADDR));
+     #endif
 					/* ACTIVE   => OUTPUT LOW (0v on target /RESET) */
 					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
      #ifdef USING_SOFTWARE_RESET
@@ -213,6 +254,20 @@ extern "C" {
    #define AVR_VCCEN_LINE_MASK  (1 << PD4)
   #endif
 
+   /* Pins used to address the target MCU */
+  #ifdef MULTIHOODLOADER
+   #define MHL_SEL_PORT PORTB
+   #define MHL_SEL_DDR DDRB
+   #define MHL_SEL_PIN PINB
+   #define MHL_SEL_MASK (1 << PB5) | (1 << PB6) | (1 << PB7)
+   #define MHL_SEL_ADDR 0x1A  // a reserved IO register location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
+
+   #define MHL_EN_PORT PORTB
+   #define MHL_EN_DDR DDRB
+   #define MHL_EN_PIN PINB
+   #define MHL_EN_MASK (1 << PB4) // Multiplexer enable input pin
+		#endif
+
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
@@ -225,6 +280,11 @@ extern "C" {
      #else
       AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK;
      #endif
+    #endif
+
+    /* set address pins to output */
+    #ifdef MULTIHOODLOADER
+     MHL_SEL_DDR |= MHL_SEL_MASK;
     #endif
 
 				// We use = here since the pins should be input/low anyways.
@@ -240,6 +300,10 @@ extern "C" {
 			{
 				if (reset)
     {
+     #ifdef MULTIHOODLOADER
+      MHL_SEL_PORT |= (*(volatile uint8_t *)(MHL_SEL_ADDR)) & MHL_SEL_MASK;
+     #endif
+
 					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
      #ifdef USING_SOFTWARE_RESET
      // Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
@@ -290,6 +354,20 @@ extern "C" {
    #define AVR_VCCEN_LINE_MASK  (1 << PC4)
   #endif
 
+   /* Pins used to address the target MCU */
+  #ifdef MULTIHOODLOADER
+   #define MHL_SEL_PORT PORTB
+   #define MHL_SEL_DDR DDRB
+   #define MHL_SEL_PIN PINB
+   #define MHL_SEL_MASK (1 << PB5) | (1 << PB6) | (1 << PB7)
+   #define MHL_SEL_ADDR 0x1A  // a reserved IO register location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
+
+   #define MHL_EN_PORT PORTB
+   #define MHL_EN_DDR DDRB
+   #define MHL_EN_PIN PINB
+   #define MHL_EN_MASK (1 << PB4) // Multiplexer enable input pin
+  #endif
+
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
@@ -304,6 +382,11 @@ extern "C" {
      #endif
     #endif
 
+    /* set address pins to output */
+    #ifdef MULTIHOODLOADER
+     MHL_SEL_DDR |= MHL_SEL_MASK;
+    #endif
+
 				DDRD |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
 				PORTD |= AVR_RESET_LINE_MASK;
 				PORTD |= (1 << PD2);
@@ -316,8 +399,43 @@ extern "C" {
 					return;
     #endif
 
+    #ifdef MULTIHOODLOADER
+     uint8_t mhladdr = (*(volatile uint8_t *)(MHL_SEL_ADDR));
+     MHL_SEL_PORT |= (mhladdr & MHL_SEL_MASK);
+			  if (reset)
+     {
+      if (mhladdr)
+					  AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
+      else
+					  MHL_EN_PORT &= ~MHL_EN_MASK;       
+       #ifdef USING_SOFTWARE_RESET
+        // Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
+        // 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
+        // 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
+        // 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
+        // 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
+        // 12 μs seams to bee a good default value
+        _delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+        if (mhladdr)
+         AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+        else
+         MHL_EN_PORT |= MHL_EN_MASK;
+       #endif
+      }
+				  else
+       if (mhladdr)
+	 				  AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+       else
+        MHL_EN_PORT |= MHL_EN_MASK;
+
+    #else
 				 if (reset)
      {
+//      #ifdef MULTIHOODLOADER
+//       MHL_SEL_PORT |= (mhladdr & MHL_SEL_MASK);
+//       if (mhladdr == 0) {
+//      #endif
+
 					 AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
       #ifdef USING_SOFTWARE_RESET
        // Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
@@ -332,7 +450,9 @@ extern "C" {
      }
 				 else
 					 AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+    #endif
 			}
+
 			static inline void Board_Erase(bool erase)
 			{
 				// No erase pin
