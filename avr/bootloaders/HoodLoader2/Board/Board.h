@@ -44,7 +44,7 @@ extern "C" {
 *  and doesn't affect standard Arduinos at all!
 */
 #define WITH_VCC_ENABLE
- #define VCCEN_ACTIVE_HIGH  true // false (default) for p-ch Mosfet (recommanded)
+ #define VCCEN_ACTIVE_HIGH  false // false (default) for p-ch Mosfet (recommanded)
  // change this to true for n-ch Mosfet (tricky to use because of inflated GS-Voltage)
 
 	/* Includes: */
@@ -113,10 +113,28 @@ extern "C" {
 			#define AUTORESET_PIN PINB
 			#define AUTORESET_MASK (1 << PB6) // D6
 			
+			/* Pin that can power the main MCU */
+  #ifdef WITH_VCC_ENABLE
+   #define AVR_VCCEN_LINE_PORT  PORTC
+   #define AVR_VCCEN_LINE_DDR   DDRC
+   #define AVR_VCCEN_LINE_PIN   PINC
+   #define AVR_VCCEN_LINE_MASK  (1 << PC4)
+  #endif
+
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
 			{
+    #ifdef WITH_VCC_ENABLE
+    /* switch on the main MCU */
+    AVR_VCCEN_LINE_DDR  |= AVR_VCCEN_LINE_MASK;
+     #if(VCCEN_ACTIVE_HIGH)
+      AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK;
+     #else
+      AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK;
+     #endif
+    #endif
+
 				// On Due reset and erase pins are on PortC instead of PortD
 				// Portmanipulation with cbi and sbi will be used here
 				DDRD |= LEDS_ALL_LEDS | (1 << PD3);
@@ -133,17 +151,27 @@ extern "C" {
 			
 			static inline void Board_Reset(bool reset)
 			{
-				/* Target /RESET line  */
+    /* Target /RESET line  */
 				if (reset) {
 					/* ACTIVE   => OUTPUT LOW (0v on target /RESET) */
-					AVR_RESET_LINE_DDR  |= AVR_RESET_LINE_MASK;
-					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
-				} 
-				else {
-				 	/* INACTIVE => set as INPUT (internal pullup on target /RESET keep it at 3.3v) */
+					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+     #ifdef USING_SOFTWARE_RESET
+     // Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
+     // 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
+     // 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
+     // 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
+     // 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
+     // 12 μs seams to bee a good default value
+      _delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+      AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
+     #endif
+    }
+				else
+    {
+			 	/* INACTIVE => set as INPUT (internal pullup on target /RESET keep it at 3.3v) */
 					AVR_RESET_LINE_DDR  &= ~AVR_RESET_LINE_MASK;
 					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
-				}
+    }
 			}
 			
 			static inline void Board_Erase(bool erase)
@@ -176,11 +204,29 @@ extern "C" {
 			#define AUTORESET_DDR DDRB
 			#define AUTORESET_PIN PINB
 			#define AUTORESET_MASK (1 << PB4) // D8
-			
+
+			/* Pin that can power the main MCU */
+  #ifdef WITH_VCC_ENABLE
+   #define AVR_VCCEN_LINE_PORT  PORTD
+   #define AVR_VCCEN_LINE_DDR   DDRD
+   #define AVR_VCCEN_LINE_PIN   PIND
+   #define AVR_VCCEN_LINE_MASK  (1 << PD4)
+  #endif
+
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
 			{
+    #ifdef WITH_VCC_ENABLE
+    /* switch on the main MCU */
+    AVR_VCCEN_LINE_DDR  |= AVR_VCCEN_LINE_MASK;
+     #if(VCCEN_ACTIVE_HIGH)
+      AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK;
+     #else
+      AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK;
+     #endif
+    #endif
+
 				// We use = here since the pins should be input/low anyways.
 				// This saves us some more bytes for flash
 				DDRD = LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASK;
@@ -193,9 +239,22 @@ extern "C" {
 			static inline void Board_Reset(bool reset)
 			{
 				if (reset)
+    {
 					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
+     #ifdef USING_SOFTWARE_RESET
+     // Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
+     // 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
+     // 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
+     // 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
+     // 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
+     // 12 μs seams to bee a good default value
+      _delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+      AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+     #endif
+    }
 				else
 					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+
 			}
 			
 			static inline void Board_Erase(bool erase)
@@ -213,20 +272,23 @@ extern "C" {
 			#define AVR_RESET_LINE_PIN PIND
 			#define AVR_RESET_LINE_MASK (1 << PD7)
 			
-			//#define AUTORESET_PORT PORTB
-			//#define AUTORESET_DDR DDRB
-			//#define AUTORESET_PIN PINB
-			//#define AUTORESET_MASK (1 << PB6) // D6
+			#define AUTORESET_PORT PORTB
+			#define AUTORESET_DDR DDRB
+			#define AUTORESET_PIN PINB
+			#define AUTORESET_MASK (1 << PB6) // D6
    // only for my modification:
-   #define AUTORESET_PORT PORTD
-   #define AUTORESET_DDR DDRD
-			#define AUTORESET_PIN PIND
-			#define AUTORESET_MASK (1 << PD6)
+   //#define AUTORESET_PORT PORTD
+   //#define AUTORESET_DDR DDRD
+			//#define AUTORESET_PIN PIND
+			//#define AUTORESET_MASK (1 << PD6)
 
 			/* Pin that can power the main MCU */
+  #ifdef WITH_VCC_ENABLE
    #define AVR_VCCEN_LINE_PORT  PORTC
    #define AVR_VCCEN_LINE_DDR   DDRC
+   #define AVR_VCCEN_LINE_PIN   PINC
    #define AVR_VCCEN_LINE_MASK  (1 << PC4)
+  #endif
 
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
@@ -241,6 +303,7 @@ extern "C" {
       AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK;
      #endif
     #endif
+
 				DDRD |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
 				PORTD |= AVR_RESET_LINE_MASK;
 				PORTD |= (1 << PD2);
@@ -251,34 +314,25 @@ extern "C" {
 				#ifdef AUTORESET_JUMPER
 				if(!(AUTORESET_PIN & AUTORESET_MASK))
 					return;
-					
-				if (reset)
-					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
-				else
-					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+    #endif
 
-				#else
-				
-				if (reset)
-    {
-					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
-     #ifdef USING_SOFTWARE_RESET
-     // Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
-     // 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
-     // 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
-     // 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
-     // 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
-     // 12 μs seams to bee a good default value
-      _delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
-      AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-     #endif
-    }
-				else
-					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-					
-				#endif
+				 if (reset)
+     {
+					 AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
+      #ifdef USING_SOFTWARE_RESET
+       // Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
+       // 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
+       // 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
+       // 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
+       // 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
+       // 12 μs seams to bee a good default value
+       _delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+       AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+      #endif
+     }
+				 else
+					 AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
 			}
-			
 			static inline void Board_Erase(bool erase)
 			{
 				// No erase pin
