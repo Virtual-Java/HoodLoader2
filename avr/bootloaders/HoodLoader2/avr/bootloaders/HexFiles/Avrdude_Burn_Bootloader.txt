@@ -1,0 +1,2 @@
+Atmega32u4 Burn Bootloader with Avrdude (more flexible and faster than using "Installation_Sketch.ino"):
+~/.arduino15/packages/arduino/tools/avrdude/6.3.0-arduino18/bin/avrdude -C ~/.arduino15/packages/arduino/tools/avrdude/6.3.0-arduino18/etc/avrdude.conf -c usbasp -p atmega32u4 -e -u -U flash:w:HoodLoader2_0_6_Mic_atmega32u4_MHLOut_SoftRst_VccEnL.hex:i -U efuse:w:0xCB:m -U hfuse:w:0xD8:m -U lfuse:w:0xFF:m -U lock:w:0x2f:m
