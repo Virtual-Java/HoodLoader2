@@ -50,7 +50,7 @@
 //  74HC04/74HC14/74HC4049)
 //
 
-//
+//  Instructions:=========================================================================
 //  
 //  To select the target device enter #xyz in serial monitor. 
 //  '#' symbolizes a number and represents a mask to prevent conflicts with other 
@@ -58,6 +58,16 @@
 //  while xyz is a decimal number in the range from 0 to 255.
 //  0 stands for the main MCU on Arduino Uno/Mega Boards, the numbers from 1 to 255 stand for the PORT_MASK!!! on PORTB
 //
+//  The address of the target mcu is kept in memory until it is OVERWRITTEN by a new value or cleared on POWER loose.
+//  It isn't cleared during BOOT process or RESET (of the USB-MCU residing MultiHoodLoader),
+//  unless the register GPIOR0 was explicitly overwritten by the program code!!!
+//
+//  UPLOADING a new sketch to the USB-MCU doesn't effect the address kept in memory!
+//  Therefore keep pointing to the previously selected target 
+//  while updating the USB-MCUs application sketch (which should include MCU-Select) is possible.
+
+#define INCLUDE_DEBUG_CODE   // Include debug code
+#define TEST 2 // Select the desired test code
 
 class MultiHoodLoader {
   public:
@@ -73,10 +83,11 @@ class MultiHoodLoader {
     this->BaudRate = BaudRate;
     Serial.begin(0); // Start USB Serial
   }
-
+  /*
   void setMemoryAddress (uint8_t address) {
     this->addr = address;
   }
+  */
   void update () {
     uint8_t readAvailable = Serial.available();
     if (Serial.baud() == BaudRate && readAvailable > 0) {
@@ -85,12 +96,9 @@ class MultiHoodLoader {
       //  buf[b] = Serial.read();
       //}
       if(Serial.read() == '#') {
-
-        Serial.print("Prev: "); // debug code
-        Serial.print(test);     // debug code
-        Serial.print('\n');     // debug code
-        
-        uint8_t mcu = 0;
+        volatile uint8_t prev = 0;
+        volatile uint8_t test = 0;
+        volatile uint8_t mcu = 0;
         bool digit = true;
         for(uint8_t b = 1; b < len && b < (readAvailable-1); b++) {
           buf[b] = Serial.read();
@@ -107,6 +115,7 @@ class MultiHoodLoader {
             }
           }
         }
+#ifndef INCLUDE_DEBUG_CODE
         if(digit) {        
           Serial.print(F("MCU: "));
           Serial.print(mcu);
@@ -116,48 +125,128 @@ class MultiHoodLoader {
         }
         Serial.print('\n');
         (*(volatile uint8_t *)(addr)) = mcu;
-#ifdef INCLUDE_DEBUG_CODE
-  // TODO: Ensure the address isn't cleared until next boot
-  #if (TEST == 1)
-        test = (*(volatile uint8_t *)(addr)); // is working
+#else // Include debug code
+  // GPIO = General Purpose Input Output (register) ≈ the port registers
+  // IOMM = Input Output Mapped Memory (location) ≈ memory containing GPIOs and perpherals
+  // Tests were performed with a setup consisting of:
+  // • An Arduino Micro (AtMega32u4); 
+  // • Sketches were compiled with gcc5.4
+  // • Compiled size was determined with Hoodloader version 2.0.5
+  
+  // Do nothing to compare code size
+  #if(TEST == 0)
+    // Empty sketch containing HoodLoaders makros
+    // With debug code EXcluded this Sketch (MCU-Select) compiles to 3898 bytes (user size);
+    // With debug code INcluded this Sketch (MCU-Select) compiles to 4032 bytes (reference);
+    // Rest of the code is 632 bytes in size (compared with empty sketch) yet
+  // store address to IOMM and read value from IOMM afterwards using C/C++ pointers
+  #elif(TEST == 1) // uses 28 Bytes of code
+    //#define FIX_ADDR  PORTC
+    // NEVER WRITE TO A RESERVED GPIO REGISTER!!!
+    // The value read can differ from the one written before!
+    //#define FIX_ADDR  0x1A // Reserved
+    #define FIX_ADDR  GPIOR0
+    //#define FIX_ADDR  GPIOR1
+    //#define FIX_ADDR  GPIOR2
+         // TODO: outputs wrong values;
+         // when FIXADDR is GPIOR0 address lowest digit is read/output as 0 all the time
+         // e.g. addr was 26 previous ==> prev = 20; addr 2n, n∈ℕ ∧ 0≤n≤9 ==> prev = 20
+        prev = (*(volatile uint8_t *)(FIX_ADDR)); // does not work, outputs wrong values
+        (*(volatile uint8_t *)(FIX_ADDR)) = mcu;
+        test = (*(volatile uint8_t *)(FIX_ADDR)); // is working
   // TODO: Test variable is always 0 in assembly code
-  #elif (TEST == 2) // store address to reserved MMIO location using assembler
-        asm (
+  
+  // store address to PORTC and read value from PORTC afterwards using assembler
+  #elif(TEST == 2) // uses  Bytes of code
+    //#define FIX_ADDR  PORTC
+    // NEVER WRITE TO A RESERVED GPIO REGISTER!!!
+    // The value read can differ from the one written before!
+    //#define FIX_ADDR  0x1A // Reserved
+    #define FIX_ADDR  GPIOR0
+    //#define FIX_ADDR  GPIOR1
+    //#define FIX_ADDR  GPIOR2
+        prev = 255;
+        asm volatile(
               "out %[ADDR], %[MCU]  \n"
-            : : [MCU] "r" (mcu), [ADDR] "I" (addr)
+              "in %[TST], %[ADDR]   \n"
+            : [TST] "=r" (test) : [MCU] "r" (mcu), [ADDR] "I" (_SFR_IO_ADDR(FIX_ADDR))
         );
-        asm (
-              "in %[TEST], %[ADDR]  \n"
-            : [TEST] "=r" (test) : [ADDR] "I" (addr)
+  // store address to PORTC and read value from PORTC afterwards using assembler
+  #elif(TEST == 3)
+    //#define FIX_ADDR  PORTC
+    // NEVER WRITE TO A RESERVED GPIO REGISTER!!!
+    // The value read can differ from the one written before!
+    //#define FIX_ADDR  0x1A // Reserved
+    #define FIX_ADDR  GPIOR0
+    //#define FIX_ADDR  GPIOR1
+    //#define FIX_ADDR  GPIOR2
+        asm volatile(
+              "in %[PRV], %[ADDR]   \n"
+              "out %[ADDR], %[MCU]  \n"
+              "in %[TST], %[ADDR]   \n"
+            : [PRV] "=&r" (prev), [TST] "=&r" (test) : [MCU] "r" (mcu), [ADDR] "I" (_SFR_IO_ADDR(FIX_ADDR))
+        );
+  
+  // store address to PORTC and read value from PORTC afterwards using assembler
+  #elif(TEST == 4)
+        
+        asm(
+              "out %[ADDR], %[MCU]  \n"
+            : : [MCU] "r" (mcu), [ADDR] "I" (FIX_ADDR)
+        );
+        asm(
+              //"in __tmp_reg__, __SREG__  \n"
+              //"cli                       \n"
+              "in %[TST], %[ADDR]  \n"
+              //"out __SREG__, __tmp_reg__ \n"
+            : [TST] "=r" (test) : [ADDR] "I" (FIX_ADDR)
+        );
+  // store address to PORTC and read value from PORTC afterwards using assembler
+  #elif(TEST == 5)
+        #define FIX_ADDR  0x08 // PORTC
+        asm volatile(
+              "out %[ADDR], %[MCU]  \n"
+            : : [MCU] "r" (mcu), [ADDR] "I" (FIX_ADDR)
+        );
+        asm volatile(
+              "in __tmp_reg__, __SREG__  \n"
+              "cli                       \n"
+              "in %[TST], %[ADDR]  \n"
+              "out __SREG__, __tmp_reg__ \n"
+            : [TST] "=r" (test) : [ADDR] "I" (0x06)
         );
   // TODO: Test variable is always 0 in assembly code
-  #elif (TEST == 3) // store address to reserved MMIO location using assembler
+  // store address to reserved EXTIO location using assembler
+  #elif(TEST == 6)
         asm (
           "st  Z, %[MCU] \n"
           : : [MCU] "r" (mcu), [ADDR] "z" (addr + 0x20)
         );
         asm (
-          "ld %[TEST], Z \n"
-          : : [TEST] "r" (test), [ADDR] "z" (addr + 0x20)
+          "ld %[TST], Z \n"
+          : : [TST] "r" (test), [ADDR] "z" (addr + 0x20)
         );
   #endif
-          Serial.print("TEST: ");
-          Serial.print(test);
-          Serial.print('\n');
+  Serial.print(F("Prev: "));
+  Serial.print(prev);
+  Serial.print('\n');
+  Serial.print(F("MCU: "));
+  Serial.print(mcu);
+  Serial.print('\n');
+  Serial.print(F("TST: "));
+  Serial.print(test);
+  Serial.print('\n');
 #endif
         }
       }
     }
 
   private:
-    uint8_t addr = 0x1A; // a reserved IO register location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
+    const uint8_t addr = 0x1A; // a reserved IO register location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
     uint32_t BaudRate;
     static const uint8_t len = 4;
     uint8_t buf[len];
     static const uint8_t numOffset = 48;
-    uint8_t mcu = 0;
-    
-    volatile uint8_t test = 0;
 };
 
 MultiHoodLoader myHL;
@@ -165,6 +254,7 @@ MultiHoodLoader myHL;
 
 void setup() {
   myHL.begin(300);
+  DDRC |= 0xC0;
 }
 
 void loop() {
