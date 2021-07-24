@@ -26,6 +26,13 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 extern "C" {
 #endif
 
+
+/**  Arduino modification to support DebugWire
+*  Capacitor between DTR (pin 20) of USB MCU and RESET pin (PB6) of main MCU
+*  Besides it enables ISP programming without capacitor 
+*  between main MCU's RESET and GND */
+#define USING_SOFTWARE_RESET
+
 	/* Includes: */
 		#include <LUFA/Common/Common.h>
 		#include <LUFA/Drivers/Board/LEDs.h>
@@ -196,7 +203,7 @@ extern "C" {
 			#define AUTORESET_DDR DDRB
 			#define AUTORESET_PIN PINB
 			#define AUTORESET_MASK (1 << PB6) // D6
-			
+
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
@@ -220,7 +227,13 @@ extern "C" {
 				#else
 				
 				if (reset)
+    {
 					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
+     #ifdef USING_SOFTWARE_RESET
+      _delay_us(100);  // wait 100 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+      AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+     #endif
+    }
 				else
 					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
 					
