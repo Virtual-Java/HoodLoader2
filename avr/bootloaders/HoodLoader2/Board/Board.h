@@ -28,10 +28,18 @@ extern "C" {
 
 
 /**  Arduino modification to support DebugWire
-*  Capacitor between DTR (pin 20) of USB MCU and RESET pin (PB6) of main MCU
-*  Besides it enables ISP programming without capacitor 
+*  Capacitor between DTR (pin 20) of USB MCU and RESET pin (PB6) of main MCU.
+*  Besides it enables ISP programming without capacitor
 *  between main MCU's RESET and GND */
 #define USING_SOFTWARE_RESET
+
+/**  Arduino modification to support DebugWire
+*  Mosfet soldered between +5V and the output of the voltage regulator
+*  to switch on/off power supply of the main MCU by software running on USB MCU.
+*  However the power supply of the USB MCU is not affected.
+*  The default VCCEN pin is PB5 to control the active low p-channel mosfet.
+*/
+#define WITH_VCC_ENABLE
 
 	/* Includes: */
 		#include <LUFA/Common/Common.h>
@@ -193,21 +201,42 @@ extern "C" {
 			// Arduino Uno/Mega 8/16/32u2
 			#else
 			
-			/** Pin that can reset the main MCU. */
+			/* Pin that can reset the main MCU. */
 			#define AVR_RESET_LINE_PORT PORTD
 			#define AVR_RESET_LINE_DDR DDRD
 			#define AVR_RESET_LINE_PIN PIND
 			#define AVR_RESET_LINE_MASK (1 << PD7)
 			
+			/* Pin that is used to de-/activate (0/1) Autoreset */
 			#define AUTORESET_PORT PORTB
 			#define AUTORESET_DDR DDRB
 			#define AUTORESET_PIN PINB
 			#define AUTORESET_MASK (1 << PB6) // D6
+			// For my modificated Uno board only:
+			//#define AUTORESET_PORT PORTD
+			//#define AUTORESET_DDR DDRD
+			//#define AUTORESET_PIN PIND
+			//#define AUTORESET_MASK (1 << PD6) // pin12 RTS
 
+			/* Pin that can power the main MCU */
+			#define AVR_VCCEN_LINE_PORT  PORTB
+			#define AVR_VCCEN_LINE_DDR   DDRB
+			#define AVR_VCCEN_LINE_MASK  (1 << PB5)
+			// For my modificated Uno board only:
+			//#define AVR_VCCEN_LINE_PORT  PORTC
+			//#define AVR_VCCEN_LINE_DDR   DDRC
+			//#define AVR_VCCEN_LINE_MASK  (1 << PC4)
+
+			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
 			{
+				#ifdef WITH_VCC_ENABLE
+					AVR_VCCEN_LINE_DDR  |= ~AVR_VCCEN_LINE_MASK;	// declare VCCEN pin (def.PB5) as output
+					AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK;	// VCCEN is LOW active (p-ch mosfet)
+					//AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK;	// VCCEN is HIGH active (n-ch mosfet)
+				#endif
 				DDRD |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
 				PORTD |= AVR_RESET_LINE_MASK;
 				PORTD |= (1 << PD2);
@@ -218,26 +247,18 @@ extern "C" {
 				#ifdef AUTORESET_JUMPER
 				if(!(AUTORESET_PIN & AUTORESET_MASK))
 					return;
-					
-				if (reset)
-					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
-				else
-					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-
-				#else
-				
-				if (reset)
-    {
-					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
-     #ifdef USING_SOFTWARE_RESET
-      _delay_us(100);  // wait 100 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
-      AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-     #endif
-    }
-				else
-					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-					
 				#endif
+
+				if (reset)
+				{
+					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
+					#ifdef USING_SOFTWARE_RESET
+					_delay_us(100);  // wait 100 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+					#endif
+				}
+				else
+					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
 			}
 			
 			static inline void Board_Erase(bool erase)
