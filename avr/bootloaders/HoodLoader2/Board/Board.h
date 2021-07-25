@@ -175,16 +175,32 @@ extern "C" {
 			#define AVR_RESET_LINE_DDR DDRD
 			#define AVR_RESET_LINE_PIN PIND
 			#define AVR_RESET_LINE_MASK (1 << PD4) // PD4 = D4, PD6 = D12, PD7 = D7
-			
+
+			/* Pin that is used to de-/activate (0/1) Autoreset */
 			#define AUTORESET_PORT PORTB
 			#define AUTORESET_DDR DDRB
 			#define AUTORESET_PIN PINB
 			#define AUTORESET_MASK (1 << PB4) // D8
+
+			/* Pin that can power the main MCU */
+			#define AVR_VCCEN_LINE_PORT  PORTD
+			#define AVR_VCCEN_LINE_DDR   DDRD
+			#define AVR_VCCEN_LINE_PIN   PIND
+			#define AVR_VCCEN_LINE_MASK  (1 << PD4) // D4
 			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)
 			{
+				/* switch on the main MCU */
+				#ifdef WITH_VCC_ENABLE
+					AVR_VCCEN_LINE_DDR  |= AVR_VCCEN_LINE_MASK; // Set VCCEN pin to output
+					#if(VCCEN_ACTIVE_HIGH)
+						AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK; // VCCEN is HIGH active (n-ch mosfet)
+					#else
+						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is LOW active (p-ch mosfet)
+					#endif
+				#endif
 				// We use = here since the pins should be input/low anyways.
 				// This saves us some more bytes for flash
 				DDRD = LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASK;
@@ -197,7 +213,19 @@ extern "C" {
 			static inline void Board_Reset(bool reset)
 			{
 				if (reset)
+				{
 					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
+					#ifdef USING_SOFTWARE_RESET
+					// Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
+					// 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
+					// 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
+					// 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
+					// 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
+					// 12 μs seams to bee a good default value
+					_delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+					#endif
+				}
 				else
 					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
 			}
@@ -231,10 +259,12 @@ extern "C" {
 			/* Pin that can power the main MCU */
 			#define AVR_VCCEN_LINE_PORT  PORTB
 			#define AVR_VCCEN_LINE_DDR   DDRB
+			#define AVR_VCCEN_LINE_PIN   PINB
 			#define AVR_VCCEN_LINE_MASK  (1 << PB5)
 			// For my modificated Uno board only:
 			//#define AVR_VCCEN_LINE_PORT  PORTC
 			//#define AVR_VCCEN_LINE_DDR   DDRC
+			//#define AVR_VCCEN_LINE_PIN   PINC
 			//#define AVR_VCCEN_LINE_MASK  (1 << PC4)
 
 			
