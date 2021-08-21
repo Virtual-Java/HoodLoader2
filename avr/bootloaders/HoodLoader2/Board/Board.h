@@ -43,6 +43,14 @@ extern "C" {
 *  74HC04/74HC14/74HC4049)
 */
 #define MULTIHOODLOADER
+#ifdef MULTIHOODLOADER
+	#define MHLEN_ACTIVE_HIGH  false // false (default) for 74HC/HEF4351/4515/4067/4053
+    // change this to true for 74HC137/138/139/237/238/239, HEF4028 (digital decoders)
+//	#define MHL_MEMORY_ADDR  0x1A  // a reserved IO register location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
+	#define MHL_MEMORY_ADDR  (RAMEND - 2)  // a memory location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
+#endif
+
+// the enable pin of an external (de)coder / (de)multiplexer
 
 /** • SoftwareReset:		(Arduino modification to support DebugWire)
 *  Due to SoftwareReset it is possible to optionaly replace the capacitor
@@ -53,6 +61,15 @@ extern "C" {
 *  and the best thing is it doesn't affect upload to Arduinos with capacitor!
 */
 #define USING_SOFTWARE_RESET
+// Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
+// 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
+// 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
+// 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
+// 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
+// 12 μs seams to bee a good default value
+#ifdef USING_SOFTWARE_RESET
+	#define SOFTWARE_RESET_TIME  12 // 12 (default) reset time in μs
+#endif
 
 /** • PowerSwitch:			(Arduino modification to support DebugWire)
 *  Mosfet soldered between +5V and the output of the voltage regulator
@@ -206,18 +223,16 @@ extern "C" {
 			#define AVR_VCCEN_LINE_MASK  (1 << PD4) // D4
 
 			/* Pins used to address the target MCU */
-			#ifdef MULTIHOODLOADER
-				#define MHL_SEL_PORT PORTB
-				#define MHL_SEL_DDR DDRB
-				#define MHL_SEL_PIN PINB
-				#define MHL_SEL_MASK (1 << PB5) | (1 << PB6) | (1 << PB7) // D9, D10, D11
-				#define MHL_SEL_ADDR 0x1A  // a reserved IO register location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
-				/* Multiplexer enable input pin */
-				#define MHL_EN_PORT PORTB
-				#define MHL_EN_DDR DDRB
-				#define MHL_EN_PIN PINB
-				#define MHL_EN_MASK (1 << PB4) // D8
-			#endif
+			#define AVR_MHLSEL_PORT PORTB
+			#define AVR_MHLSEL_DDR DDRB
+			#define AVR_MHLSEL_PIN PINB
+			#define AVR_MHLSEL_MASK (1 << PB5) | (1 << PB6) | (1 << PB7) // D9, D10, D11
+
+			/* Multiplexer enable input pin */
+			#define AVR_MHLEN_PORT PORTB
+			#define AVR_MHLEN_DDR DDRB
+			#define AVR_MHLEN_PIN PINB
+			#define AVR_MHLEN_MASK (1 << PB4) // D8
 
 			
 			/* Inline Functions: */
@@ -228,15 +243,15 @@ extern "C" {
 				#ifdef WITH_VCC_ENABLE
 					AVR_VCCEN_LINE_DDR  |= AVR_VCCEN_LINE_MASK; // Set VCCEN pin to output
 					#if(VCCEN_ACTIVE_HIGH)
-						AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK; // VCCEN is HIGH active (n-ch mosfet)
+						AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK; // VCCEN is active HIGH (n-ch mosfet)
 					#else
-						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is LOW active (p-ch mosfet)
+						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is active LOW (p-ch mosfet)
 					#endif
 				#endif
 
 				/* set address pins to output */
 				#ifdef MULTIHOODLOADER
-					MHL_SEL_DDR |= MHL_SEL_MASK;
+					AVR_MHLSEL_DDR |= AVR_MHLSEL_MASK;
 				#endif
 
 				// We use = here since the pins should be input/low anyways.
@@ -253,20 +268,14 @@ extern "C" {
 				if (reset)
 				{
 					#ifdef MULTIHOODLOADER
-						uint8_t mhladdr = (*(volatile uint8_t *)(MHL_SEL_ADDR));
-						MHL_SEL_PORT |= (mhladdr & MHL_SEL_MASK);
+						uint8_t mhladdr = (*(volatile uint8_t *)(MHL_MEMORY_ADDR));
+						AVR_MHLSEL_PORT |= (mhladdr & AVR_MHLSEL_MASK);
 					#endif
 
 					AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
 					#ifdef USING_SOFTWARE_RESET
-					// Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
-					// 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
-					// 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
-					// 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
-					// 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
-					// 12 μs seams to bee a good default value
-					_delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
-					AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+						_delay_us(SOFTWARE_RESET_TIME);  // wait a few microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+						AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
 					#endif
 				}
 				else
@@ -311,18 +320,17 @@ extern "C" {
 			//#define AVR_VCCEN_LINE_MASK  (1 << PC4)
 
 			/* Pins used to address the target MCU */
-			#ifdef MULTIHOODLOADER
-				#define MHL_SEL_PORT PORTB
-				#define MHL_SEL_DDR DDRB
-				#define MHL_SEL_PIN PINB
-				#define MHL_SEL_MASK (1 << PB5) | (1 << PB6) | (1 << PB7)
-				#define MHL_SEL_ADDR 0x1A  // a reserved IO register location on Arduino Micro/Leonardo (AtMega8u2, 16u2, 32u2, 16u2, 32u4) and Arduino Mega (AtMega1280, 2560)
+			#define AVR_MHLSEL_PORT PORTB
+			#define AVR_MHLSEL_DDR DDRB
+			#define AVR_MHLSEL_PIN PINB
+			#define AVR_MHLSEL_MASK (1 << PB5) | (1 << PB6) | (1 << PB7)
 
-				#define MHL_EN_PORT PORTB
-				#define MHL_EN_DDR DDRB
-				#define MHL_EN_PIN PINB
-				#define MHL_EN_MASK (1 << PB4) // Multiplexer enable input pin
-			#endif
+			/* Multiplexer enable input pin */
+			#define AVR_MHLEN_PORT PORTB
+			#define AVR_MHLEN_DDR DDRB
+			#define AVR_MHLEN_PIN PINB
+			#define AVR_MHLEN_MASK (1 << PB4) // Multiplexer enable input pin
+
 			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
@@ -332,15 +340,15 @@ extern "C" {
 				#ifdef WITH_VCC_ENABLE
 					AVR_VCCEN_LINE_DDR  |= AVR_VCCEN_LINE_MASK; // Set VCCEN pin to output
 					#if(VCCEN_ACTIVE_HIGH)
-						AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK; // VCCEN is HIGH active (n-ch mosfet)
+						AVR_VCCEN_LINE_PORT |= AVR_VCCEN_LINE_MASK; // VCCEN is active HIGH (n-ch mosfet)
 					#else
-						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is LOW active (p-ch mosfet)
+						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is active LOW (p-ch mosfet)
 					#endif
 				#endif
 
-				/* set address pins to output */
 				#ifdef MULTIHOODLOADER
-					MHL_SEL_DDR |= MHL_SEL_MASK;
+					AVR_MHLSEL_DDR |= AVR_MHLSEL_MASK; // Set address pins to output
+					AVR_MHLEN_DDR  |= AVR_MHLEN_MASK;  // Set MHLEN pin to output
 				#endif
 
 				DDRD |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
@@ -356,47 +364,62 @@ extern "C" {
 				#endif
 
 				#ifdef MULTIHOODLOADER
-					uint8_t mhladdr = (*(volatile uint8_t *)(MHL_SEL_ADDR));
-					MHL_SEL_PORT |= (mhladdr & MHL_SEL_MASK);
+					uint8_t mhladdr = (*(volatile uint8_t *)(MHL_MEMORY_ADDR));
+					AVR_MHLSEL_PORT |= (mhladdr & AVR_MHLSEL_MASK);
 					if (reset)
 					{
-						if (mhladdr)
-							AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
-						else
-							MHL_EN_PORT &= ~MHL_EN_MASK;
+						if (mhladdr == 0)
+							AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK; // reset the onboard IO-MCU (main-MCU)
+						else // (mhladdr >= 1)
+						{
+							/* reset the selected extern MCU */
+							#ifdef MULTIHOODLOADER
+								#if(MHLEN_ACTIVE_HIGH)
+									AVR_MHLEN_PORT |= AVR_MHLEN_MASK;  // set MHLEN to HIGH
+								#else
+									AVR_MHLEN_PORT &= ~AVR_MHLEN_MASK; // set MHLEN to LOW
+								#endif
+							#endif
+						}
 						#ifdef USING_SOFTWARE_RESET
-							// Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
-							// 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
-							// 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
-							// 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
-							// 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
-							// 12 μs seams to bee a good default value
-							_delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
-							if (mhladdr)
-								AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-							else
-								MHL_EN_PORT |= MHL_EN_MASK;
+							_delay_us(SOFTWARE_RESET_TIME);  // wait a few microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+							if (mhladdr == 0)
+								AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK; // start the onboard IO-MCU (main-MCU)
+							else // (mhladdr >= 1)
+							{
+								/* start the selected extern MCU */
+								#ifdef MULTIHOODLOADER
+									#if(MHLEN_ACTIVE_HIGH)
+										AVR_MHLEN_PORT &= ~AVR_MHLEN_MASK; // set MHLEN to LOW
+									#else
+										AVR_MHLEN_PORT |= AVR_MHLEN_MASK;  // set MHLen to HIGH
+									#endif
+								#endif
+							}
 						#endif
 					}
 					else
 					{
-						if (mhladdr) // TODO: maybe the other way round, should be "if(mhladdr == 0)"
-							AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
-						else
-							MHL_EN_PORT |= MHL_EN_MASK;
+						if (mhladdr == 0)
+							AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK; // Reset the onboard IO-MCU (main-MCU)
+						else // (mhladdr >= 1)
+						{
+							/* reset the selected extern MCU */
+							#ifdef MULTIHOODLOADER
+								#if(MHLEN_ACTIVE_HIGH)
+									AVR_MHLEN_PORT &= ~AVR_MHLEN_MASK; // MHLEN is active HIGH
+								#else
+									AVR_MHLEN_PORT |= AVR_MHLEN_MASK;  // MHLEN is active LOW
+								#endif
+							#endif
+						}
 					}
 				#else // #ifndef MULTIHOODLOADER
 					if (reset)
 					{
 						AVR_RESET_LINE_PORT &= ~AVR_RESET_LINE_MASK;
 						#ifdef USING_SOFTWARE_RESET
-							// Changing this delay to specific values between 3 and 42 μs saves some bytes of flash (due to perfect timer interrupt)
-							// 4 Bytes for 3, 6, 12, 18, 24, 30, 36, 42 μs
-							// 6 Bytes for 1, 2, 5, 7, 8, 10, 20, 40, 46, μs,
-							// 10 Bytes for 200, 500, 1000 μs (values > 48 μs)
-							// 1, 2, 3, 5, 12, 20, 40, 200, 500 μs values tested with Arduino Uno R3 @ 16 MHz, so the valid range is: 1 to 500 μs; values like 800, 1000 μs didn't work for me
-							// 12 μs seams to bee a good default value
-							_delay_us(12);  // wait 12 microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
+							_delay_us(SOFTWARE_RESET_TIME);  // wait a few microsecords to reset main MCU on boards with resistor instead of capacitor on reset line
 							AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
 						#endif
 					}
