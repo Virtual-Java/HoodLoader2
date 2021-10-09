@@ -1096,11 +1096,13 @@ static void CDC_Device_LineEncodingChanged(void)
 			clockSpeed = 0;
 		}
 
+    #if (!DISABLE_OLD_BOOTLOADER_COMPARTIBILITY)
 		// Or special case 57600 baud for compatibility with the ATmega328 bootloader.
 		else if(((brr == SERIAL_2X_UBBRVAL(57600)) && (BAUDRATE_CDC_BOOTLOADER != 57600))){
 			brr = SERIAL_UBBRVAL(57600);
 			clockSpeed = 0;
 		}
+    #endif
 
 		UBRR1 = brr;
 
