@@ -51,6 +51,22 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_MICRO_PID
 # make sure to use a standard baud rate (supported by avrdude or it will (sometimes randomly) not work
 HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=57600
 
+# Options to select supported frame formats for USART
+# To save flash memory comment out all baud rates exept the ones you need
+# When no option is uncomented 8 data bits will be implemented only
+# In this case approximately 26 bytes will be saved
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_5 # commenting out does not save anything
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_6 # comment out to save ~8 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_7 # comment out to save ~8 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_8 # comment out to save ~8 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_9 # comment out to save ~10 bytes of flash
+
+# Commenting out all of the following options will save 28 bytes additionally
+HOODLOADER2_OPTS += -DIMPLEMENT_STOP_BITS_2 # comment out to save ~10 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_PARITY_TYPE_ODD # comment out to save ~8 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_PARITY_TYPE_EVEN # comment out to save ~8 bytes of flash
+
+
 # Option to disable compartibility with (the old) ATmega328 bootloader
 # This saves e.g. approximately 12 bytes of flash at 19200 baud
 # Not required for 57600 baud and therefore disabled by default
