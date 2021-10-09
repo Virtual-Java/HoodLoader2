@@ -116,6 +116,10 @@ extern "C" {
 			#define AUTORESET_DDR DDRB
 			#define AUTORESET_PIN PINB
 			#define AUTORESET_MASK (1 << PB6) // D6
+
+			/* Ports for sync UART */
+			#define UART_XCK_DDR  DDRD
+			#define UART_XCK_MASK (1 << PD5) // TXLED
 			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
@@ -187,6 +191,10 @@ extern "C" {
 			#define AVR_VCCEN_LINE_DDR   DDRD
 			#define AVR_VCCEN_LINE_PIN   PIND
 			#define AVR_VCCEN_LINE_MASK  (1 << PD4) // D4
+
+			/* Ports for sync UART */
+			#define UART_XCK_DDR  DDRD
+			#define UART_XCK_MASK (1 << PD5) // TXLED
 			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
@@ -267,7 +275,10 @@ extern "C" {
 			//#define AVR_VCCEN_LINE_PIN   PINC
 			//#define AVR_VCCEN_LINE_MASK  (1 << PC4)
 
-			
+			/* Ports for sync UART */
+			#define UART_XCK_DDR  DDRD
+			#define UART_XCK_MASK (1 << PD5) // TXLED
+
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Board_Init(void)

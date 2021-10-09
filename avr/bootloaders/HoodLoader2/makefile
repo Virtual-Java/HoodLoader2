@@ -51,7 +51,7 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_MICRO_PID
 # make sure to use a standard baud rate (supported by avrdude or it will (sometimes randomly) not work
 HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=57600
 
-# Options to select supported frame formats for USART
+# Options to select supported frame formats for UART
 # To save flash memory comment out all baud rates exept the ones you need
 # When no option is uncomented 8 data bits will be implemented only
 # In this case approximately 26 bytes will be saved
@@ -65,6 +65,15 @@ HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_9 # comment out to save ~10 bytes of f
 HOODLOADER2_OPTS += -DIMPLEMENT_STOP_BITS_2 # comment out to save ~10 bytes of flash
 HOODLOADER2_OPTS += -DIMPLEMENT_PARITY_TYPE_ODD # comment out to save ~8 bytes of flash
 HOODLOADER2_OPTS += -DIMPLEMENT_PARITY_TYPE_EVEN # comment out to save ~8 bytes of flash
+
+
+# The following options are for synchronous uart (USART) only
+# Use synchronous uart with a separated clock line
+HOODLOADER2_OPTS += -DSYNC_UART=false # saves 16 bytes of flash
+# Output synchronous uart clock via XCK1 pin
+HOODLOADER2_OPTS += -DMASTERMODE=false # needs 2 bytes additionaly
+# Set clock polarity of UART clock
+HOODLOADER2_OPTS += -DCLOCK_POLARITY=0
 
 
 # Option to disable compartibility with (the old) ATmega328 bootloader
