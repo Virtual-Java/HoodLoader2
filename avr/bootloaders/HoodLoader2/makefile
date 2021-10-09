@@ -74,12 +74,9 @@ HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
 # Default 32u4 Bootkey was 0x8000 as 16 bit, bit an 8 bit check is enough normally
 # 0x280 was the default bootkey for HL2.0.4 and older
 HOODLOADER2_OPTS += -DBOOTKEY=RAMEND
-HOODLOADER2_OPTS += -DSECOND_BOOTKEY=0x280
-
-# Option to disable the second (old) Bootkey for 57600 baud too
+# To disable the second (old) Bootkey for 57600 baud too, uncomment the following line
 # This saves approximately 24 bytes of flash at 57600 baud
-# Has no effect for other baud rates
-HOODLOADER2_OPTS += -DDISABLE_SECOND_BOOTKEY=false
+HOODLOADER2_OPTS += -DSECOND_BOOTKEY=0x280
 
 
 # Add an offset of 256 + 128 bytes to RAMSTART for the ringbuffers
