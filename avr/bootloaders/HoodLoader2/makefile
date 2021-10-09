@@ -76,6 +76,11 @@ HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
 HOODLOADER2_OPTS += -DBOOTKEY=RAMEND
 HOODLOADER2_OPTS += -DSECOND_BOOTKEY=0x280
 
+# Option to disable the second (old) Bootkey for 57600 baud too
+# This saves approximately 24 bytes of flash at 57600 baud
+# Has no effect for other baud rates
+HOODLOADER2_OPTS += -DDISABLE_SECOND_BOOTKEY=false
+
 
 # Add an offset of 256 + 128 bytes to RAMSTART for the ringbuffers
 # +1 byte offset for old MagicBootKey support (0x280)

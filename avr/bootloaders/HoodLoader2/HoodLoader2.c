@@ -125,8 +125,8 @@ static volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
 // 2nd Bootkey backwards compatibility is normally not needed, wanted and useful
 // If you also change the programming speed.
 // You may only want to use this if you want to stick to the old HID Project 2.2 software with baud 57600.
-#if (BAUDRATE_CDC_BOOTLOADER != 57600)
-#undef SECOND_BOOTKEY
+#if (BAUDRATE_CDC_BOOTLOADER != 57600 || DISABLE_SECOND_BOOTKEY)
+#undef SECOND_BOOTKEY // saves 12 bytes of flash memory
 #elif defined(__AVR_ATmega32U4__)
 static volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)0x8000;
 #else
