@@ -11,25 +11,71 @@
 
 # Run "make help" for target help.
 
-MCU          = atmega16u2
-ARCH         = AVR8
-BOARD        = USER
-F_CPU        = 16000000
-F_USB        = $(F_CPU)
-OPTIMIZATION = s
-TARGET       = HoodLoader2
-SRC          = $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
-LUFA_PATH    = ../lufa-LUFA-170418/LUFA
-CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS)
-LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS)
-LTO          = Y
+#
+# Copyright(©) 2021 Jonathan Vetter
+# https://github.com/Virtual-Java
+#
+# This extended makefile supports selecting the target MCU to compile for in a terminal.
+# To do so the target mcu has to be appended to the "make" command.
+# e.g. "make atmega32u4" compiles for the AtMega32u4 controller instead of the default Atmega16u2.
+#
+# It is backwards compartible to the original Hoodloader makefile.
+# To test a custom configuration you can edit the definitions 
+# in the "make (HoodLoader2 make process)" section
+# and then call "make" without any parameter.
+# 
+# When creating this modified makefile I was inspired by the makefiles of Optiboot.
+# 
+#
+# This file has basic CPU defintions, while many possible combinations
+# of F_CPU, BAUD_RATE, and UART are built by a shell script "makeall.hoodloader".
+#
 
+HELPTEXT += "target atmega8/16/32u2, atmega16/32u4 - newer 32/44pin AVR-USB-MCUs \n"
+
+# make (HoodLoader2 make process)
+# TODO: ERROR!!! This makefile always compiles for MCU type atmega8u2
+MCU          ?= atmega8u2
+ARCH         ?= AVR8
+BOARD        ?= USER
+F_CPU        ?= 16000000
+F_USB        ?= $(F_CPU)
+OPTIMIZATION ?= s
+# TARGET has to be defined, but target isn't a good name chosen to define the Bootloader file name
+TARGET       ?= HoodLoader2
+# BOOTLOADER is a better name to specify the target bootloader
+BOOTLOADER   ?= HoodLoader
+SRC          ?= $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
+LUFA_PATH    ?= ../lufa-LUFA-170418/LUFA
+CC_FLAGS     ?= -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS)
+LD_FLAGS     ?= -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS)
+LTO          ?= Y
+
+# defaults
+MCU_DEFAULT          = atmega16u2
+ARCH_DEFAULT         = AVR8
+BOARD_DEFAULT        = USER
+F_CPU_DEFAULT        = 16000000
+F_USB_DEFAULT        = $(F_CPU)
+OPTIMIZATION_DEFAULT = s
+BOOTLOADER_DEFAULT   = HoodLoader
+SRC_DEFAULT          = $(BOOTLOADER).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
+LUFA_PATH_DEFAULT    = ../lufa/LUFA
+CC_FLAGS_DEFAULT     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS)
+LD_FLAGS_DEFAULT     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS)
+LTO_DEFAULT          = Y
+
+# TODO: For some reason adding a version indicator leads to the following error message:
+# No rule to create the target "Hoodloader2_0_5" used by "atmega8u2atUSB".
+#VERSION      ?= 2_0_5  # Add the version of Hoodloader
 
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
 # device's fuses.
 FLASH_SIZE_KB         = 16
 BOOT_SECTION_SIZE_KB  = 4
+
+#override MCU = $(MCU_DEFAULT) # Doesn't work
 
 #define LUFA_VID					0x03EB
 #define LUFA_PID					0x204A
@@ -70,6 +116,8 @@ HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
 HOODLOADER2_OPTS += -DBOOTKEY=RAMEND
 HOODLOADER2_OPTS += -DSECOND_BOOTKEY=0x280
 
+#HOODLOADER2_OPTS += -DUSING_SOFTWARE_RESET
+
 
 # Add an offset of 256 + 128 bytes to RAMSTART for the ringbuffers
 # +1 byte offset for old MagicBootKey support (0x280)
@@ -97,6 +145,92 @@ BOOT_API_LD_FLAGS     = $(call BOOT_SECTION_LD_FLAG, .apitable_trampolines, Boot
 BOOT_API_LD_FLAGS    += $(call BOOT_SECTION_LD_FLAG, .apitable_jumptable,   BootloaderAPI_JumpTable,   32)
 BOOT_API_LD_FLAGS    += $(call BOOT_SECTION_LD_FLAG, .apitable_signatures,  BootloaderAPI_Signatures,  8)
 
+
+HELPTEXT += "\n-------------\n\n"
+
+#-----------------------
+# ATmega 8u2
+#-----------------------
+#ATmega8u2
+atmega8u2atUSB: BOOTLOADER             = $(BOOTLOADER_DEFAULT)
+atmega8u2atUSB: MCU                    = atmega8u2
+atmega8u2atUSB: FLASH_SIZE_KB          = 8
+atmega8u2atUSB: BOOT_SECTION_SIZE_KB   = 4
+atmega8u2atUSB: ARCH                   = $(ARCH_DEFAULT)
+atmega8u2atUSB: BOARD                  = USER 
+atmega8u2atUSB: F_CPU                  = $(F_CPU_DEFAULT)
+atmega8u2atUSB: F_USB                  = $(F_CPU)
+atmega8u2atUSB: OPTIMIZATION           = $(OPTIMIZATION_DEFAULT)
+atmega8u2atUSB: TARGET                 = $(TARGET_DEFAULT)
+atmega8u2atUSB: SRC                    = $(SRC_DEFAULT)
+atmega8u2atUSB: LUFA_PATH              = $(LUFA_PATH_DEFAULT)
+atmega8u2atUSB: CC_FLAGS               = $(CC_FLAGS_DEFAULT)
+atmega8u2atUSB: LD_FLAGS               = $(LD_FLAGS_DEFAULT)
+atmega8u2atUSB: LTO                    = $(LTO_DEFAULT)
+atmega8u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).hex
+ifndef PRODUCTION
+#atmega8u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).lst
+endif
+atmega8u2:
+	"$(MAKE)" atmega8u2atUSB
+
+atmega8u2_isp: atmega8u2
+atmega8u2_isp: TARGET = atmega8u2
+atmega8u2_isp: MCU_TARGET = atmega8u2
+atmega8u2_isp: HFUSE ?= D8   # 2048 byte boot, SPI ENABLED
+atmega8u2_isp: LFUSE ?= FF   # Full Swing xtal (16MHz) 16KCK/14CK+65ms
+atmega8u2_isp: EFUSE ?= FE   # 2.7V brownout
+atmega8u2_isp: LOCK  ?= 2F   # APP protect mode 1, BL protect mode 2
+atmega8u2_isp: isp
+
+
+#-----------------------
+# ATmega 16u2
+#-----------------------
+#ATmega16u2
+atmega16u2atUSB: BOOTLOADER             = $(BOOTLOADER_DEFAULT)
+atmega16u2atUSB: MCU                    = atmega16u2
+atmega16u2atUSB: FLASH_SIZE_KB          = 16
+atmega16u2atUSB: BOOT_SECTION_SIZE_KB   = 4
+atmega16u2atUSB: ARCH                   = $(ARCH_DEFAULT)
+atmega16u2atUSB: BOARD                  = USER 
+atmega16u2atUSB: F_CPU                  = $(F_CPU_DEFAULT)
+atmega16u2atUSB: F_USB                  = $(F_CPU)
+atmega16u2atUSB: OPTIMIZATION           = $(OPTIMIZATION_DEFAULT)
+atmega16u2atUSB: TARGET                 = $(TARGET_DEFAULT)
+atmega16u2atUSB: SRC                    = $(SRC_DEFAULT)
+atmega16u2atUSB: LUFA_PATH              = $(LUFA_PATH_DEFAULT)
+atmega16u2atUSB: CC_FLAGS               = $(CC_FLAGS_DEFAULT)
+atmega16u2atUSB: LD_FLAGS               = $(LD_FLAGS_DEFAULT)
+atmega16u2atUSB: LTO                    = $(LTO_DEFAULT)
+atmega16u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).hex
+ifndef PRODUCTION
+#atmega16u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).lst
+endif
+atmega16u2test:
+	"$(MAKE)" atmega16u2atUSB
+
+atmega16u2_isp: atmega16u2
+atmega16u2_isp: TARGET = atmega16u2
+atmega16u2_isp: MCU_TARGET = atmega16u2
+atmega16u2_isp: HFUSE ?= D8   # 2048 byte boot, SPI ENABLED
+atmega16u2_isp: LFUSE ?= FF   # Full Swing xtal (16MHz) 16KCK/14CK+65ms
+atmega16u2_isp: EFUSE ?= FE   # 2.7V brownout
+atmega16u2_isp: LOCK  ?= 2F   # APP protect mode 1, BL protect mode 2
+atmega16u2_isp: isp
+
+
+##
+## Include additional platforms
+# include Makefile.hoodloader
+
+#BAUDCHECK=
+#ifndef PRODUCTION
+#ifndef SOFT_UART
+#BAUDCHECK= baudcheck
+#endif
+#endif
+
 # Default target
 all:
 
@@ -115,3 +249,11 @@ include $(DMBS_PATH)/gcc.mk
 include $(DMBS_PATH)/hid.mk
 include $(DMBS_PATH)/avrdude.mk
 include $(DMBS_PATH)/atprogram.mk
+
+
+#windows "rm" is dumb and objects to wildcards that don't exist
+clean:
+	@touch  __temp_.o __temp_.elf __temp_.lst __temp_.map
+	@touch  __temp_.sym __temp_.lss __temp_.eep __temp_.srec
+	@touch __temp_.bin __temp_.hex __temp_.tmp.sh
+	rm -rf *.o *.elf *.lst *.map *.sym *.lss *.eep *.srec *.bin *.hex *.tmp.sh

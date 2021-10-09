@@ -35,25 +35,21 @@ HELPTEXT += "target atmega8/16/32u2, atmega16/32u4 - newer 32/44pin AVR-USB-MCUs
 
 # make (HoodLoader2 make process)
 # TODO: ERROR!!! This makefile always compiles for MCU type atmega8u2
-MCU          = atmega16u2
-ARCH         = AVR8
-BOARD        = USER
-F_CPU        = 16000000
-F_USB        = $(F_CPU)
-OPTIMIZATION = s
+MCU          ?= atmega16u2
+ARCH         ?= AVR8
+BOARD        ?= USER
+F_CPU        ?= 16000000
+F_USB        ?= $(F_CPU)
+OPTIMIZATION ?= s
 # TARGET has to be defined, but target isn't a good name chosen to define the Bootloader file name
-TARGET       = HoodLoader2
+TARGET       ?= HoodLoader2
 # BOOTLOADER is a better name to specify the target bootloader
-BOOTLOADER   = HoodLoader2
-SRC          = $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
-LUFA_PATH    = ../lufa-LUFA-170418/LUFA
-CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS)
-LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS)
-LTO          = Y
-
-# TODO: For some reason adding a version indicator leads to the following error message:
-# No rule to create the target "Hoodloader2_0_5" used by "atmega8u2atUSB".
-#VERSION      = _0_5  # Add the version of Hoodloader
+BOOTLOADER   ?= HoodLoader
+SRC          ?= $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
+LUFA_PATH    ?= ../lufa-LUFA-170418/LUFA
+CC_FLAGS     ?= -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS)
+LD_FLAGS     ?= -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS)
+LTO          ?= Y
 
 # defaults
 MCU_DEFAULT          = atmega16u2
@@ -62,12 +58,16 @@ BOARD_DEFAULT        = USER
 F_CPU_DEFAULT        = 16000000
 F_USB_DEFAULT        = $(F_CPU)
 OPTIMIZATION_DEFAULT = s
-BOOTLOADER_DEFAULT   = HoodLoader2
+BOOTLOADER_DEFAULT   = HoodLoader
 SRC_DEFAULT          = $(BOOTLOADER).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
 LUFA_PATH_DEFAULT    = ../lufa/LUFA
 CC_FLAGS_DEFAULT     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS)
 LD_FLAGS_DEFAULT     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS)
 LTO_DEFAULT          = Y
+
+# TODO: For some reason adding a version indicator leads to the following error message:
+# No rule to create the target "Hoodloader2_0_5" used by "atmega8u2atUSB".
+#VERSION      ?= 2_0_5  # Add the version of Hoodloader
 
 # Flash size and bootloader section sizes of the target, in KB. These must
 # match the target's total FLASH size and the bootloader size set in the
@@ -172,7 +172,7 @@ ifndef PRODUCTION
 #atmega8u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).lst
 endif
 atmega8u2:
-	"$(MAKE)" atmega8u2atUSB
+	"$(MAKE)" atmega8u2atUSB	
 
 atmega8u2_isp: atmega8u2
 atmega8u2_isp: TARGET = atmega8u2
@@ -182,156 +182,6 @@ atmega8u2_isp: LFUSE ?= FF   # Full Swing xtal (16MHz) 16KCK/14CK+65ms
 atmega8u2_isp: EFUSE ?= FE   # 2.7V brownout
 atmega8u2_isp: LOCK  ?= 2F   # APP protect mode 1, BL protect mode 2
 atmega8u2_isp: isp
-
-
-#-----------------------
-# ATmega 16u2
-#-----------------------
-#ATmega16u2
-atmega16u2atUSB: BOOTLOADER             = $(BOOTLOADER_DEFAULT)
-atmega16u2atUSB: MCU                    = atmega16u2
-atmega16u2atUSB: FLASH_SIZE_KB          = 16
-atmega16u2atUSB: BOOT_SECTION_SIZE_KB   = 4
-atmega16u2atUSB: ARCH                   = $(ARCH_DEFAULT)
-atmega16u2atUSB: BOARD                  = USER 
-atmega16u2atUSB: F_CPU                  = $(F_CPU_DEFAULT)
-atmega16u2atUSB: F_USB                  = $(F_CPU)
-atmega16u2atUSB: OPTIMIZATION           = $(OPTIMIZATION_DEFAULT)
-atmega16u2atUSB: TARGET                 = $(TARGET_DEFAULT)
-atmega16u2atUSB: SRC                    = $(SRC_DEFAULT)
-atmega16u2atUSB: LUFA_PATH              = $(LUFA_PATH_DEFAULT)
-atmega16u2atUSB: CC_FLAGS               = $(CC_FLAGS_DEFAULT)
-atmega16u2atUSB: LD_FLAGS               = $(LD_FLAGS_DEFAULT)
-atmega16u2atUSB: LTO                    = $(LTO_DEFAULT)
-#atmega16u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).hex
-atmega16u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).hex
-ifndef PRODUCTION
-#atmega16u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).lst
-endif
-atmega16u2:
-	"$(MAKE)" atmega16u2atUSB
-
-atmega16u2_isp: atmega16u2
-atmega16u2_isp: TARGET = atmega16u2
-atmega16u2_isp: MCU_TARGET = atmega16u2
-atmega16u2_isp: HFUSE ?= D8   # 2048 byte boot, SPI ENABLED
-atmega16u2_isp: LFUSE ?= FF   # Full Swing xtal (16MHz) 16KCK/14CK+65ms
-atmega16u2_isp: EFUSE ?= FE   # 2.7V brownout
-atmega32u4_isp: LOCK  ?= 2F   # APP protect mode 1, BL protect mode 2
-atmega16u2_isp: isp
-
-
-#-----------------------
-# ATmega 32u2
-#-----------------------
-#ATmega32u2
-atmega32u2atUSB: BOOTLOADER             = $(BOOTLOADER_DEFAULT)
-atmega32u2atUSB: MCU                    = atmega32u2
-atmega32u2atUSB: FLASH_SIZE_KB          = 32
-atmega32u2atUSB: BOOT_SECTION_SIZE_KB   = 4
-atmega32u2atUSB: ARCH                   = $(ARCH_DEFAULT)
-atmega32u2atUSB: BOARD                  = USER 
-atmega32u2atUSB: F_CPU                  = $(F_CPU_DEFAULT)
-atmega32u2atUSB: F_USB                  = $(F_CPU)
-atmega32u2atUSB: OPTIMIZATION           = $(OPTIMIZATION_DEFAULT)
-atmega32u2atUSB: TARGET                 = $(TARGET_DEFAULT)
-atmega32u2atUSB: SRC                    = $(SRC_DEFAULT)
-atmega32u2atUSB: LUFA_PATH              = $(LUFA_PATH_DEFAULT)
-atmega32u2atUSB: CC_FLAGS               = $(CC_FLAGS_DEFAULT)
-atmega32u2atUSB: LD_FLAGS               = $(LD_FLAGS_DEFAULT)
-atmega32u2atUSB: LTO                    = $(LTO_DEFAULT)
-atmega32u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).hex
-ifndef PRODUCTION
-#atmega32u2atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).lst
-endif
-atmega32u2:
-	"$(MAKE)" atmega32u2atUSB
-
-atmega32u2_isp: atmega32u2
-atmega32u2_isp: TARGET = atmega32u2
-atmega32u2_isp: MCU_TARGET = atmega32u2
-atmega32u2_isp: HFUSE ?= D8   # 2048 byte boot, SPI ENABLED
-atmega32u2_isp: LFUSE ?= FF   # Full Swing xtal (16MHz) 16KCK/14CK+65ms
-atmega32u2_isp: EFUSE ?= FE   # 2.7V brownout
-
-atmega32u4_isp: LOCK  ?= 2F   # APP protect mode 1, BL protect mode 2
-atmega32u2_isp: isp
-
-
-#-----------------------
-# ATmega 16u4
-#-----------------------
-#ATmega16u4
-atmega16u4atUSB: BOOTLOADER             = $(BOOTLOADER_DEFAULT)
-atmega16u4atUSB: MCU                    = atmega16u4
-atmega16u4atUSB: FLASH_SIZE_KB          = 16
-atmega16u4atUSB: BOOT_SECTION_SIZE_KB   = 4
-atmega16u4atUSB: ARCH                   = $(ARCH_DEFAULT)
-atmega16u4atUSB: BOARD                  = USER 
-atmega16u4atUSB: F_CPU                  = $(F_CPU_DEFAULT)
-atmega16u4atUSB: F_USB                  = $(F_CPU)
-atmega16u4atUSB: OPTIMIZATION           = $(OPTIMIZATION_DEFAULT)
-atmega16u4atUSB: TARGET                 = $(TARGET_DEFAULT)
-atmega16u4atUSB: SRC                    = $(SRC_DEFAULT)
-atmega16u4atUSB: LUFA_PATH              = $(LUFA_PATH_DEFAULT)
-atmega16u4atUSB: CC_FLAGS               = $(CC_FLAGS_DEFAULT)
-atmega16u4atUSB: LD_FLAGS               = $(LD_FLAGS_DEFAULT)
-atmega16u4atUSB: LTO                    = $(LTO_DEFAULT)
-atmega16u4atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).hex
-ifndef PRODUCTION
-#atmega16u4atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).lst
-endif
-atmega16u4:
-	"$(MAKE)" atmega16u4atUSB
-
-atmega16u4_isp: atmega16u4
-atmega16u4_isp: TARGET = atmega16u4
-atmega16u4_isp: MCU_TARGET = atmega16u4
-atmega16u4_isp: HFUSE ?= D8   # 2048 byte boot, SPI ENABLED
-atmega16u4_isp: LFUSE ?= FF   # Full Swing xtal (16MHz) 16KCK/14CK+65ms
-atmega16u4_isp: EFUSE ?= FB   # 2.6V brownout
-atmega32u4_isp: LOCK  ?= 2F   # APP protect mode 1, BL protect mode 2
-atmega16u4_isp: isp
-
-
-#-----------------------
-# ATmega 32u4
-#-----------------------
-#ATmega32u4
-atmega32u4atUSB: BOOTLOADER             = $(BOOTLOADER_DEFAULT)
-atmega32u4atUSB: MCU                    = atmega32u4
-atmega32u4atUSB: FLASH_SIZE_KB          = 32
-atmega32u4atUSB: BOOT_SECTION_SIZE_KB   = 4
-atmega32u4atUSB: ARCH                   = $(ARCH_DEFAULT)
-atmega32u4atUSB: BOARD                  = USER 
-atmega32u4atUSB: F_CPU                  = $(F_CPU_DEFAULT)
-atmega32u4atUSB: F_USB                  = $(F_CPU)
-atmega32u4atUSB: OPTIMIZATION           = $(OPTIMIZATION_DEFAULT)
-atmega32u4atUSB: TARGET                 = $(TARGET_DEFAULT)
-atmega32u4atUSB: SRC                    = $(SRC_DEFAULT)
-atmega32u4atUSB: LUFA_PATH              = $(LUFA_PATH_DEFAULT)
-atmega32u4atUSB: CC_FLAGS               = $(CC_FLAGS_DEFAULT)
-atmega32u4atUSB: LD_FLAGS               = $(LD_FLAGS_DEFAULT)
-atmega32u4atUSB: LTO                    = $(LTO_DEFAULT)
-#atmega32u4atUSB: $(BOOTLOADER)_atmega32u4_UART$(UART)_$(BAUD_RATE)_$(AVR_FREQ).hex
-#atmega32u4atUSB: $(BOOTLOADER)$(Version)_$(BOARD)_$(MCU)_$(BAUD_RATE)_$(F_CPU).hex
-atmega32u4atUSB: $(BOOTLOADER)$(Version)_$(BOARD)_$(MCU).hex
-ifndef PRODUCTION
-##atmega32u4atUSB: $(BOOTLOADER)_$(MCU)_$(BAUD_RATE)_$(AVR_FREQ).lst
-##atmega32u4atUSB: $(BOOTLOADER)_atmega32u4_UART$(UART)_$(BAUD_RATE)_$(AVR_FREQ).lst
-#atmega32u4atUSB: $(BOOTLOADER)$(VERSION)_$(BOARD)_$(MCU).lst
-endif
-atmega32u4:
-	"$(MAKE)" atmega32u4atUSB
-
-atmega32u4_isp: atmega32u4
-atmega32u4_isp: TARGET = atmega32u4
-atmega32u4_isp: MCU_TARGET = atmega32u4
-atmega32u4_isp: HFUSE ?= D8   # 2048 byte boot, SPI ENABLED
-atmega32u4_isp: LFUSE ?= FF   # Full Swing xtal (16MHz) 16KCK/14CK+65ms
-atmega32u4_isp: EFUSE ?= FB   # 2.6V brownout
-atmega32u4_isp: LOCK  ?= 2F   # APP protect mode 1, BL protect mode 2
-atmega32u4_isp: isp
 
 
 ##
@@ -366,7 +216,7 @@ include $(DMBS_PATH)/atprogram.mk
 
 
 #windows "rm" is dumb and objects to wildcards that don't exist
-clean:
+clean-all:
 	@touch  __temp_.o __temp_.elf __temp_.lst __temp_.map
 	@touch  __temp_.sym __temp_.lss __temp_.eep __temp_.srec
 	@touch __temp_.bin __temp_.hex __temp_.tmp.sh
