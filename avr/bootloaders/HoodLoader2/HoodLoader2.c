@@ -1140,9 +1140,6 @@ static void CDC_Device_LineEncodingChanged(void)
 					UsartMask1A &= ~(1 << U2X1); // Disable USART double speed mode
 				}
 			#endif
-		#endif
-
-		#if (SYNC_UART == false) // Asynchronous UART
 			// Reconfigure the USART
 			UBRR1 = brr;
 			UCSR1C = UsartMask1C;
@@ -1154,14 +1151,14 @@ static void CDC_Device_LineEncodingChanged(void)
 			#endif
 			// Reconfigure the USART
 			UBRR1 = brr;
-			UCSR1A = (UsartMask1A); // Double speed mode not allowed (should already be zero)
-			UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1)); // enable the transmitter and the receiver
 			UCSR1C = (UsartMask1C | (1 << UMSEL10)); // config USART; 8N1; synchronous mode
 			#if (UART_CLOCK_POLARITY == true)
 				UCSR1C |= (1 << UCPOL0); // TXDn: Falling XCKn Edge; RXDn: Rising XCKn Edge
 			#else
 				; // (UCPOL0 unset) TXDn: Rising XCKn Edge; RXDn: Falling XCKn Edge
 			#endif
+			UCSR1A = (UsartMask1A); // Double speed mode not allowed (should already be zero)
+			UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1)); // enable the transmitter and the receiver
 		#endif // SYNC_UART
 
 	}
