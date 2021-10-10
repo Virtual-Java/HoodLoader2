@@ -1144,7 +1144,7 @@ static void CDC_Device_LineEncodingChanged(void)
 			UBRR1 = brr;
 			UCSR1C = UsartMask1C;
 			UCSR1A = UsartMask1A;
-			UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1)); // enable the transmitter and the receiver
+			UCSR1B = ((UsartMask1B) | (1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1)); // enable the transmitter and the receiver
 		#else // Synchronous UART
 			#if (MASTERMODE == true)
 				UART_XCK_DDR |= UART_XCK_MASK; // set XCK pin to output
@@ -1158,7 +1158,7 @@ static void CDC_Device_LineEncodingChanged(void)
 				; // (UCPOL0 unset) TXDn: Rising XCKn Edge; RXDn: Falling XCKn Edge
 			#endif
 			UCSR1A = (UsartMask1A); // Double speed mode not allowed (should already be zero)
-			UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1)); // enable the transmitter and the receiver
+			UCSR1B = ((UsartMask1B) | (1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1)); // enable the transmitter and the receiver
 		#endif // SYNC_UART
 
 	}
