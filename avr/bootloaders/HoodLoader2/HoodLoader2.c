@@ -126,7 +126,7 @@ static volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
 // If you also change the programming speed.
 // You may only want to use this if you want to stick to the old HID Project 2.2 software with baud 57600.
 #if (BAUDRATE_CDC_BOOTLOADER != 57600)
-#undef SECOND_BOOTKEY
+#undef SECOND_BOOTKEY // saves 12 bytes of flash memory
 #elif defined(__AVR_ATmega32U4__)
 static volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)0x8000;
 #else
@@ -1058,56 +1058,109 @@ static void CDC_Device_LineEncodingChanged(void)
 	else
 	{
 		mode = MODE_USBSERIAL;
-		uint8_t ConfigMask = 0;
+		#if (SYNC_UART == false)
+		  uint8_t UsartMask1A = (1 << U2X1);
+			// moving this upwards saves 4 Bytes of flash
+			uint16_t brr = SERIAL_2X_UBBRVAL(BaudRateBPS);
+		#else
+			uint8_t UsartMask1A = 0;
+			// (8/2) is the ratio between uart double speed and usart mode
+			uint16_t brr = SERIAL_XCK_UBBRVAL(BaudRateBPS);
+		#endif
+		uint8_t UsartMask1B = 0;
+		uint8_t UsartMask1C = 0;
 
 		switch (LineEncoding.ParityType)
 		{
+			#ifdef IMPLEMENT_PARITY_TYPE_ODD
 			case CDC_PARITY_Odd:
-			ConfigMask = ((1 << UPM11) | (1 << UPM10));
+			UsartMask1C = ((1 << UPM11) | (1 << UPM10));
 			break;
+			#endif
+			#ifdef IMPLEMENT_PARITY_TYPE_EVEN
 			case CDC_PARITY_Even:
-			ConfigMask = (1 << UPM11);
+			UsartMask1C = (1 << UPM11);
 			break;
+			#endif
 		}
 
+		#ifdef IMPLEMENT_STOP_BITS_2
 		if (LineEncoding.CharFormat == CDC_LINEENCODING_TwoStopBits)
-		ConfigMask |= (1 << USBS1);
+		UsartMask1C |= (1 << USBS1);
+		#endif
+
+		#if (!((defined IMPLEMENT_DATA_BITS_5) \
+				|| (defined IMPLEMENT_DATA_BITS_6) \
+				|| (defined IMPLEMENT_DATA_BITS_7) \
+				|| (defined IMPLEMENT_DATA_BITS_8) \
+				|| (defined IMPLEMENT_DATA_BITS_9)))
+			#define IMPLEMENT_DATA_BITS_8 // default
+		#endif
 
 		switch (LineEncoding.DataBits)
 		{
+			#ifdef IMPLEMENT_DATA_BITS_5
+			case 5:
+			;
+			break;
+			#endif
+			#ifdef IMPLEMENT_DATA_BITS_6
 			case 6:
-			ConfigMask |= (1 << UCSZ10);
+			UsartMask1C |= (1 << UCSZ10);
 			break;
+			#endif
+			#ifdef IMPLEMENT_DATA_BITS_7
 			case 7:
-			ConfigMask |= (1 << UCSZ11);
+			UsartMask1C |= (1 << UCSZ11);
 			break;
+			#endif
+			#ifdef IMPLEMENT_DATA_BITS_8
 			case 8:
-			ConfigMask |= ((1 << UCSZ11) | (1 << UCSZ10));
+			UsartMask1C |= ((1 << UCSZ11) | (1 << UCSZ10));
 			break;
+			#endif
+			#ifdef IMPLEMENT_DATA_BITS_9
+			case 9:
+			UsartMask1C |= ((1 << UCSZ11) | (1 << UCSZ10));
+			UsartMask1B |= (1 << UCSZ12);
+			break;
+			#endif
 		}
 
-		// Set the new baud rate before configuring the USART
-		uint8_t clockSpeed = (1 << U2X1);
-		uint16_t brr = SERIAL_2X_UBBRVAL(BaudRateBPS);
+		#if (SYNC_UART == false) // Asynchronous UART
+				// No need for or cant have USART double speed mode
+				if ((brr & 1) || (brr > 4095)) {
+					brr >>= 1;
+					UsartMask1A &= ~(1 << U2X1); // Disable USART double speed mode
+				}
+			#if (!DISABLE_OLD_BOOTLOADER_COMPARTIBILITY)
+				// Or special case 57600 baud for compatibility with the ATmega328 bootloader.
+				else if(((brr == SERIAL_XCK_UBBRVAL(57600)) && (BAUDRATE_CDC_BOOTLOADER != 57600))){
+					brr = SERIAL_UBBRVAL(57600);
+					UsartMask1A &= ~(1 << U2X1); // Disable USART double speed mode
+				}
+			#endif
+			// Reconfigure the USART
+			UBRR1 = brr;
+			UCSR1C = UsartMask1C;
+			UCSR1A = UsartMask1A;
+			UCSR1B = ((UsartMask1B) | (1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1)); // enable the transmitter and the receiver
+		#else // Synchronous UART
+			#if (MASTERMODE == true)
+				UART_XCK_DDR |= UART_XCK_MASK; // set XCK pin to output
+			#endif
+			// Reconfigure the USART
+			UBRR1 = brr;
+			UCSR1C = (UsartMask1C | (1 << UMSEL10)); // config USART; 8N1; synchronous mode
+			#if (UART_CLOCK_POLARITY == true)
+				UCSR1C |= (1 << UCPOL0); // TXDn: Falling XCKn Edge; RXDn: Rising XCKn Edge
+			#else
+				; // (UCPOL0 unset) TXDn: Rising XCKn Edge; RXDn: Falling XCKn Edge
+			#endif
+			UCSR1A = (UsartMask1A); // Double speed mode not allowed (should already be zero)
+			UCSR1B = ((UsartMask1B) | (1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1)); // enable the transmitter and the receiver
+		#endif // SYNC_UART
 
-		// No need U2X or cant have U2X.
-		if ((brr & 1) || (brr > 4095)) {
-			brr >>= 1;
-			clockSpeed = 0;
-		}
-
-		// Or special case 57600 baud for compatibility with the ATmega328 bootloader.
-		else if(((brr == SERIAL_2X_UBBRVAL(57600)) && (BAUDRATE_CDC_BOOTLOADER != 57600))){
-			brr = SERIAL_UBBRVAL(57600);
-			clockSpeed = 0;
-		}
-
-		UBRR1 = brr;
-
-		// Reconfigure the USART
-		UCSR1C = ConfigMask;
-		UCSR1A = clockSpeed;
-		UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
 	}
 
 	/* Release the TX line after the USART has been reconfigured */

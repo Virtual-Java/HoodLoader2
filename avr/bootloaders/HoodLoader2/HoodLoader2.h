@@ -98,6 +98,16 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		/** Eight character bootloader firmware identifier reported to the host when requested. */
 		#define SOFTWARE_IDENTIFIER          "HL2.0.6"
 
+
+		/** Macro for calculating the baud value from a given baud rate when \c synchronous usart mode is
+		 *  selected.
+		 *
+		 *  \param[in] Baud  Target serial synchronous UART baud rate.
+		 *
+		 *  \return Closest UBRR register value for the given USART frequency.
+		 */
+		#define SERIAL_XCK_UBBRVAL(Baud) ((((F_CPU / 8) + (Baud / 2)) / (Baud)) - 1)
+
 	/* Enums: */
 		/** Possible memory types that can be addressed via the bootloader. */
 		enum AVR109_Memories

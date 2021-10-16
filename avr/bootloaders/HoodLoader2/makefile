@@ -51,6 +51,37 @@ HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_MICRO_PID
 # make sure to use a standard baud rate (supported by avrdude or it will (sometimes randomly) not work
 HOODLOADER2_OPTS += -DBAUDRATE_CDC_BOOTLOADER=57600
 
+# Options to select supported frame formats for UART
+# To save flash memory comment out all baud rates exept the ones you need
+# When no option is uncomented 8 data bits will be implemented only
+# In this case approximately 26 bytes will be saved
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_5 # commenting out does not save anything
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_6 # comment out to save ~8 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_7 # comment out to save ~8 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_8 # comment out to save ~8 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_DATA_BITS_9 # comment out to save ~10 bytes of flash
+
+# Commenting out all of the following options will save 28 bytes additionally
+HOODLOADER2_OPTS += -DIMPLEMENT_STOP_BITS_2 # comment out to save ~10 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_PARITY_TYPE_ODD # comment out to save ~8 bytes of flash
+HOODLOADER2_OPTS += -DIMPLEMENT_PARITY_TYPE_EVEN # comment out to save ~8 bytes of flash
+
+
+# The following options are for synchronous uart (USART) only
+# Use synchronous uart with a separated clock line
+HOODLOADER2_OPTS += -DSYNC_UART=false # saves 16 bytes of flash
+# Output synchronous uart clock via XCK1 pin
+HOODLOADER2_OPTS += -DMASTERMODE=false # needs 2 bytes additionaly
+# Set clock polarity of UART clock
+HOODLOADER2_OPTS += -DCLOCK_POLARITY=0
+
+
+# Option to disable compartibility with (the old) ATmega328 bootloader
+# This saves e.g. approximately 12 bytes of flash at 19200 baud
+# Not required for 57600 baud and therefore disabled by default
+HOODLOADER2_OPTS += -DDISABLE_OLD_BOOTLOADER_COMPARTIBILITY=false
+
+
 # Select how the single/double tab should behave
 HOODLOADER2_OPTS += -DDOUBLE_TAB_RESET_TO_BOOTLOADER=true
 
@@ -68,6 +99,8 @@ HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
 # Default 32u4 Bootkey was 0x8000 as 16 bit, bit an 8 bit check is enough normally
 # 0x280 was the default bootkey for HL2.0.4 and older
 HOODLOADER2_OPTS += -DBOOTKEY=RAMEND
+# To disable the second (old) Bootkey for 57600 baud too, uncomment the following line
+# This saves approximately 24 bytes of flash at 57600 baud
 HOODLOADER2_OPTS += -DSECOND_BOOTKEY=0x280
 
 
