@@ -162,8 +162,12 @@ void Application_Jump_Check(void)
 	wdt_disable();
 
 	// Turn off leds on every startup
+#ifndef DEACTIVATE_TXLED
 	LEDs_TurnOffTXLED;
+#endif
+#ifndef DEACTIVATE_RXLED
 	LEDs_TurnOffRXLED;
+#endif
 
 	// check if a sketch is presented and what to do then
 	if (pgm_read_word(0) != 0xFFFF){
@@ -263,8 +267,12 @@ int main(void)
 	while(true) {
 		// Pulse generation counters to keep track of the number of milliseconds remaining for each pulse type
 		#define TX_RX_LED_PULSE_MS 3
-		uint8_t TxLEDPulse = 0;
-		uint8_t RxLEDPulse = 0;
+		#ifndef DEACTIVATE_TXLED
+			uint8_t TxLEDPulse = 0;
+		#endif
+		#ifndef DEACTIVATE_RXLED
+			uint8_t RxLEDPulse = 0;
+		#endif
 
 		// USB-Serial main loop
 		while(true) {
@@ -362,11 +370,13 @@ int main(void)
 					USBtoUSART_free = 0;
 				}
 
+				#ifndef DEACTIVATE_RXLED
 				// Light RX led if we still have data in the USBtoUSART buffer
 				if (USBtoUSART_free != (USB2USART_BUFLEN-1)) {
 					LEDs_TurnOnRXLED;
 					RxLEDPulse = TX_RX_LED_PULSE_MS;
 				}
+				#endif
 
 				//================================================================================
 				// USARTtoUSB
@@ -430,12 +440,16 @@ int main(void)
 						}
 					}
 
+				#ifndef DEACTIVATE_TXLED
 					// Light TX led if there is data to be send
 					LEDs_TurnOnTXLED;
 					TxLEDPulse = TX_RX_LED_PULSE_MS;
+				#endif
 				}
 			}
 
+			// deactivate check routine when both status leds are disabled
+			#if !(defined(DEACTIVATE_TXLED) && defined(DEACTIVATE_TXLED))
 			// LED timer overflow.
 			// Check Leds (this methode takes less flash than an ISR)
 			if (TIFR0 & (1 << TOV0)){
@@ -443,14 +457,20 @@ int main(void)
 				// http://www.nongnu.org/avr-libc/user-manual/FAQ.html#faq_intbits
 				TIFR0 = (1 << TOV0);
 
+				#ifndef DEACTIVATE_TXLED
 				// Turn off TX LED once the TX pulse period has elapsed
 				if (TxLEDPulse && !(--TxLEDPulse))
 				LEDs_TurnOffTXLED;
+				#endif
 
+				#ifndef DEACTIVATE_RXLED
 				// Turn off RX LED once the RX pulse period has elapsed
 				if (RxLEDPulse && !(--RxLEDPulse))
 				LEDs_TurnOffRXLED;
+				#endif
+
 			}
+			#endif
 		};
 
 		// Reset CDC Serial settings and disable USART properly
@@ -458,8 +478,12 @@ int main(void)
 		CDC_Device_LineEncodingChanged();
 
 		// Dont forget LEDs on if suddenly unconfigured.
+		#ifndef DEACTIVATE_TXLED
 		LEDs_TurnOffTXLED;
+		#endif
+		#ifndef DEACTIVATE_RXLED
 		LEDs_TurnOffRXLED;
+		#endif
 	}
 }
 
@@ -476,8 +500,10 @@ static void SetupHardware(void)
 	/* Initialize the USB and other board hardware drivers */
 	USB_Init();
 
+	#if !(defined(DEACTIVATE_TXLED) && defined(DEACTIVATE_TXLED))
 	/* Start the flush timer for Leds */
 	TCCR0B = (1 << CS02); // clk I/O / 256 (From prescaler)
+	#endif
 
 	// Inits Serial pins, leds, reset and erase pins
 	// No need to turn off Leds, this is done in the bootkey check function

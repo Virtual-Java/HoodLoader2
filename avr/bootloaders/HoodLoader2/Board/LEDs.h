@@ -80,7 +80,8 @@ extern "C" {
 			/** LED mask for the library LED driver, to indicate other activity. */
 			#define LEDMASK_13       LEDS_LED3
 			#define LEDPORT_13       PORTC
-			
+
+
 			// Direct Port access for more speed
 			// Leds PORT needs to be switched for Micro
 			#if (PRODUCTID == ARDUINO_MICRO_PID)
@@ -93,6 +94,25 @@ extern "C" {
 				#define LEDs_TurnOffRXLED (LEDPORT_RX &= ~LEDMASK_RX)
 				#define LEDs_TurnOnTXLED (LEDPORT_TX |= LEDMASK_TX)
 				#define LEDs_TurnOnRXLED (LEDPORT_RX |= LEDMASK_RX)
+			#endif
+
+			// Options to deactivate TXLED
+			#ifdef DEACTIVATE_TXLED
+				#undef LEDMASK_TX
+				#undef LEDs_TurnOnTXLED
+				#undef LEDs_TurnOffTXLED
+				#define LEDMASK_TX       0
+//				#define LEDs_TurnOnTXLED  ;
+//				#define LEDs_TurnOffTXLED  ;
+			#endif
+			// Options to deactivate RXLED
+			#ifdef DEACTIVATE_RXLED
+				#undef LEDMASK_RX
+				#undef LEDs_TurnOnRXLED
+				#undef LEDs_TurnOffRXLED
+				#define LEDMASK_RX       0
+//				#define LEDs_TurnOnRXLED  ;
+//				#define LEDs_TurnOffRXLED  ;
 			#endif
 
 		/* Inline Functions: */

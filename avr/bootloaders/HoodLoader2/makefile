@@ -75,6 +75,10 @@ HOODLOADER2_OPTS += -DMASTERMODE=false # needs 2 bytes additionaly
 # Set clock polarity of UART clock
 HOODLOADER2_OPTS += -DCLOCK_POLARITY=0
 
+# Options to deactivate the status leds signaling uart communication
+# Uncomment both TXLED and RXLED to save ~62 bytes of flash
+#HOODLOADER2_OPTS += -DDEACTIVATE_TXLED # uncomment to save ~50 bytes of flash
+#HOODLOADER2_OPTS += -DDEACTIVATE_RXLED # uncomment to save ~30 bytes of flash
 
 # Option to disable compartibility with (the old) ATmega328 bootloader
 # This saves e.g. approximately 12 bytes of flash at 19200 baud

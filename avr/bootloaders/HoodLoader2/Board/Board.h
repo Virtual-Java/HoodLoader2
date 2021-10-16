@@ -223,12 +223,16 @@ extern "C" {
 				#if (#DDRD == (#LEDDDR_TX & #AVR_RESET_LINE_DDR & #UART_TX_DDR)) // compare ddr
 					DDRD = LEDMASK_TX | AVR_RESET_LINE_MASK | UART_TX_MASK;
 				#else
-					LEDDDR_TX |= LEDMASK_TX;
+					#ifndef DEACTIVATE_TXLED
+						LEDDDR_TX |= LEDMASK_TX;
+					#endif
 					AVR_RESET_LINE_DDR |= AVR_RESET_LINE_MASK;
-					UART_RX_DDR |= UART_TX_MASK;
+					UART_TX_DDR |= UART_TX_MASK;
 				#endif
 			 	// Results in sbi instructions
-				LEDDDR_RX |= LEDMASK_RX;
+				#ifndef DEACTIVATE_RXLED
+					LEDDDR_RX |= LEDMASK_RX;
+				#endif
 				AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
 				UART_RX_PORT |= UART_RX_MASK;
 			}
@@ -315,12 +319,20 @@ extern "C" {
 						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is LOW active (p-ch mosfet)
 					#endif
 				#endif
-				#if (#DDRD == (#LEDDDR_TX & #AVR_RESET_LINE_DDR & #UART_TX_DDR)) // compare ddr
-					DDRD| = LEDS_ALL_LEDS | AVR_RESET_LINE_MASK | UART_TX_MASK;
+				#if (#DDRD == (#LEDDDR_TX & #LEDDDR_RX & #AVR_RESET_LINE_DDR & #UART_TX_DDR)) // compare ddr
+					DDRD |= LEDS_ALL_LEDS | AVR_RESET_LINE_MASK | UART_TX_MASK;
 				#else
+					#ifndef DEACTIVATE_TXLED
+						LEDDDR_TX |= LEDMASK_TX;
+					#endif
+					#ifndef DEACTIVATE_TXLED
+						LEDDDR_RX |= LEDMASK_RX;
+					#endif
 					AVR_RESET_LINE_DDR |= AVR_RESET_LINE_MASK;
-					UART_RX_DDR |= UART_RX_MASK;
+					UART_TX_DDR |= UART_TX_MASK
 				#endif
+				AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+				UART_RX_DDR |= UART_RX_MASK;
 			}
 			
 			static inline void Board_Reset(bool reset)
