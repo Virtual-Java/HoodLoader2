@@ -96,14 +96,24 @@ extern "C" {
 				#define LEDs_TurnOnRXLED (LEDPORT_RX |= LEDMASK_RX)
 			#endif
 
+			// Deactivate status leds which share the pin with xck
+			#if (SYNC_UART == true) // Synchronous UART
+				#if ((#LEDPORT_TX == #UART_XCK_PORT) && (#LEDMASK_TX == #UART_XCK_MASK)) // TODO is always true
+					#undef DEACTIVATE_TXLED
+					#define DEACTIVATE_TXLED
+				#endif
+				#if ((#LEDPORT_RX == #UART_XCK_PORT) && (#LEDMASK_RX == #UART_XCK_MASK)) // TODO is always wrong
+					#undef DEACTIVATE_RXLED
+					#define DEACTIVATE_RXLED
+				#endif
+			#endif
+
 			// Options to deactivate TXLED
 			#ifdef DEACTIVATE_TXLED
 				#undef LEDMASK_TX
 				#undef LEDs_TurnOnTXLED
 				#undef LEDs_TurnOffTXLED
 				#define LEDMASK_TX       0
-//				#define LEDs_TurnOnTXLED  ;
-//				#define LEDs_TurnOffTXLED  ;
 			#endif
 			// Options to deactivate RXLED
 			#ifdef DEACTIVATE_RXLED
@@ -111,8 +121,6 @@ extern "C" {
 				#undef LEDs_TurnOnRXLED
 				#undef LEDs_TurnOffRXLED
 				#define LEDMASK_RX       0
-//				#define LEDs_TurnOnRXLED  ;
-//				#define LEDs_TurnOffRXLED  ;
 			#endif
 
 		/* Inline Functions: */
