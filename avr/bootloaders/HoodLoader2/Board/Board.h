@@ -192,9 +192,18 @@ extern "C" {
 			#define AVR_VCCEN_LINE_PIN   PIND
 			#define AVR_VCCEN_LINE_MASK  (1 << PD4) // D4
 
+			/* Ports for UART */
+			#define UART_TX_DDR  DDRD
+			#define UART_TX_PORT  PORTD
+			#define UART_TX_MASK (1 << PD3) // TX
+			#define UART_RX_DDR  DDRD
+			#define UART_RX_PORT  PORTD
+			#define UART_RX_MASK (1 << PD2) // RX
+
 			/* Ports for sync UART */
 			#define UART_XCK_DDR  DDRD
-			#define UART_XCK_MASK (1 << PD5) // TXLED
+			#define UART_XCK_PORT  PORTD
+			#define UART_XCK_MASK (1 << PD5) // XCK
 			
 			/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
@@ -211,11 +220,17 @@ extern "C" {
 				#endif
 				// We use = here since the pins should be input/low anyways.
 				// This saves us some more bytes for flash
-				DDRD = LEDMASK_TX | (1 << PD3) | AVR_RESET_LINE_MASK;
+				#if (#DDRD == (#LEDDDR_TX & #AVR_RESET_LINE_DDR & #UART_TX_DDR)) // compare ddr
+					DDRD = LEDMASK_TX | AVR_RESET_LINE_MASK | UART_TX_MASK;
+				#else
+					LEDDDR_TX |= LEDMASK_TX;
+					AVR_RESET_LINE_DDR |= AVR_RESET_LINE_MASK;
+					UART_RX_DDR |= UART_TX_MASK;
+				#endif
 			 	// Results in sbi instructions
-				DDRB  |= LEDMASK_RX;
-				PORTD |= AVR_RESET_LINE_MASK;
-				PORTD |= (1 << PD2);
+				LEDDDR_RX |= LEDMASK_RX;
+				AVR_RESET_LINE_PORT |= AVR_RESET_LINE_MASK;
+				UART_RX_PORT |= UART_RX_MASK;
 			}
 			
 			static inline void Board_Reset(bool reset)
@@ -275,6 +290,14 @@ extern "C" {
 			//#define AVR_VCCEN_LINE_PIN   PINC
 			//#define AVR_VCCEN_LINE_MASK  (1 << PC4)
 
+			/* Ports for UART */
+			#define UART_TX_DDR  DDRD
+			#define UART_TX_PORT  PORTD
+			#define UART_TX_MASK (1 << PD3) // TX
+			#define UART_RX_DDR  DDRD
+			#define UART_RX_PORT  PORTD
+			#define UART_RX_MASK (1 << PD2) // RX
+
 			/* Ports for sync UART */
 			#define UART_XCK_DDR  DDRD
 			#define UART_XCK_MASK (1 << PD5) // TXLED
@@ -292,9 +315,12 @@ extern "C" {
 						AVR_VCCEN_LINE_PORT &= ~AVR_VCCEN_LINE_MASK; // VCCEN is LOW active (p-ch mosfet)
 					#endif
 				#endif
-				DDRD |= LEDS_ALL_LEDS | (1 << PD3) | AVR_RESET_LINE_MASK;
-				PORTD |= AVR_RESET_LINE_MASK;
-				PORTD |= (1 << PD2);
+				#if (#DDRD == (#LEDDDR_TX & #AVR_RESET_LINE_DDR & #UART_TX_DDR)) // compare ddr
+					DDRD| = LEDS_ALL_LEDS | AVR_RESET_LINE_MASK | UART_TX_MASK;
+				#else
+					AVR_RESET_LINE_DDR |= AVR_RESET_LINE_MASK;
+					UART_RX_DDR |= UART_RX_MASK;
+				#endif
 			}
 			
 			static inline void Board_Reset(bool reset)

@@ -69,25 +69,30 @@ extern "C" {
 
 			/** LED mask for the library LED driver, to indicate TX activity. */
 			#define LEDMASK_TX       LEDS_LED2
+			#define LEDPORT_TX       PORTD
+			#define LEDDDR_TX        DDRD
 
 			/** LED mask for the library LED driver, to indicate RX activity. */
 			#define LEDMASK_RX       LEDS_LED1
+			#define LEDPORT_RX       PORTB
+			#define LEDDDR_RX        DDRB
 
 			/** LED mask for the library LED driver, to indicate other activity. */
 			#define LEDMASK_13       LEDS_LED3
+			#define LEDPORT_13       PORTC
 			
 			// Direct Port access for more speed
 			// Leds PORT needs to be switched for Micro
 			#if (PRODUCTID == ARDUINO_MICRO_PID)
-				#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
-				#define LEDs_TurnOnRXLED (PORTB &= ~LEDMASK_RX)
-				#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
-				#define LEDs_TurnOffRXLED (PORTB |= LEDMASK_RX)
+				#define LEDs_TurnOnTXLED (LEDPORT_TX &= ~LEDMASK_TX)
+				#define LEDs_TurnOnRXLED (LEDPORT_RX &= ~LEDMASK_RX)
+				#define LEDs_TurnOffTXLED (LEDPORT_TX |= LEDMASK_TX)
+				#define LEDs_TurnOffRXLED (LEDPORT_RX |= LEDMASK_RX)
 			#else
-				#define LEDs_TurnOffTXLED (PORTD &= ~LEDMASK_TX)
-				#define LEDs_TurnOffRXLED (PORTB &= ~LEDMASK_RX)
-				#define LEDs_TurnOnTXLED (PORTD |= LEDMASK_TX)
-				#define LEDs_TurnOnRXLED (PORTB |= LEDMASK_RX)
+				#define LEDs_TurnOffTXLED (LEDPORT_TX &= ~LEDMASK_TX)
+				#define LEDs_TurnOffRXLED (LEDPORT_RX &= ~LEDMASK_RX)
+				#define LEDs_TurnOnTXLED (LEDPORT_TX |= LEDMASK_TX)
+				#define LEDs_TurnOnRXLED (LEDPORT_RX |= LEDMASK_RX)
 			#endif
 
 		/* Inline Functions: */
@@ -174,15 +179,19 @@ extern "C" {
 			
 			/** LED mask for the library LED driver, to indicate TX activity. */
 			#define LEDMASK_TX       LEDS_LED1
+			#define LEDPORT_TX       PORTD
+			#define LEDDDR_TX        DDRD
 			
 			/** LED mask for the library LED driver, to indicate RX activity. */
 			#define LEDMASK_RX       LEDS_LED2
+			#define LEDPORT_RX       PORTD
+			#define LEDDDR_RX        DDRD
 			
 			// Direct Port access for more speed
-			#define LEDs_TurnOnTXLED (PORTD &= ~LEDMASK_TX)
-			#define LEDs_TurnOnRXLED (PORTD &= ~LEDMASK_RX)
-			#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
-			#define LEDs_TurnOffRXLED (PORTD |= LEDMASK_RX)
+			#define LEDs_TurnOnTXLED (LEDPORT_TX &= ~LEDMASK_TX)
+			#define LEDs_TurnOnRXLED (LEDPORT_RX &= ~LEDMASK_RX)
+			#define LEDs_TurnOffTXLED (LEDPORT_TX |= LEDMASK_TX)
+			#define LEDs_TurnOffRXLED (LEDPORT_RX |= LEDMASK_RX)
 
 		/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
