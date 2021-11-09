@@ -83,6 +83,11 @@ extern "C" {
 				#define LEDs_TurnOnRXLED (PORTB &= ~LEDMASK_RX)
 				#define LEDs_TurnOffTXLED (PORTD |= LEDMASK_TX)
 				#define LEDs_TurnOffRXLED (PORTB |= LEDMASK_RX)
+			#elif (PRODUCTID == ARDUINO_WIFI2_PID)
+				#define LEDs_TurnOnTXLED (PORTD &= ~(1 << PD7) )
+				#define LEDs_TurnOnRXLED (PORTD &= ~(1 << PD6) )
+				#define LEDs_TurnOffTXLED (PORTD |= (1 << PD7) )
+				#define LEDs_TurnOffRXLED (PORTD |= (1 << PD6) )
 			#else
 				#define LEDs_TurnOffTXLED (PORTD &= ~LEDMASK_TX)
 				#define LEDs_TurnOffRXLED (PORTB &= ~LEDMASK_RX)

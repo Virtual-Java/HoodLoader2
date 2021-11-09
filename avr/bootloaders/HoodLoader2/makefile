@@ -37,6 +37,7 @@ BOOT_SECTION_SIZE_KB  = 4
 #define ARDUINO_VID									0x2341
 #define ARDUINO_UNO_PID							0x0043 // R3 (0001 R1)
 #define ARDUINO_UNO_WIFI_PID				0x0057
+#define ARDUINO_UNO_WIFI2_PID				0x2145
 #define ARDUINO_MEGA_PID						0x0042 // R3 (0010 R1)
 #define ARDUINO_MEGA_ADK_PID				0x0044 // R3 (003F R1)
 #define ARDUINO_LEONARDO_PID				0x0036 // Bootloader, not program!

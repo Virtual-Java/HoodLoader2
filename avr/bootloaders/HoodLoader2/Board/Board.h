@@ -52,12 +52,12 @@ extern "C" {
 			#define ARDUINO_VID                 0x2341
 			#define ARDUINO_UNO_PID             0x0043 // R3 (0001 R1)
 			#define ARDUINO_UNO_WIFI_PID        0x0057
+			#define ARDUINO_UNO_WIFI2_PID       0x2145
 			#define ARDUINO_MEGA_PID            0x0042 // R3 (0010 R1)
 			#define ARDUINO_MEGA_ADK_PID        0x0044 // R3 (003F R1)
 			#define ARDUINO_LEONARDO_PID        0x0036 // Bootloader, not program!
 			#define ARDUINO_MICRO_PID           0x0037 // Bootloader, not program!
 			#define ARDUINO_DUE_PID             0x003D
-
 			
 			// USB product string settings
 			#if (PRODUCTID == ARDUINO_UNO_PID)
@@ -77,6 +77,11 @@ extern "C" {
 				// correct different VID (see official boards.txt)
 				#undef ARDUINO_VID
 				#define ARDUINO_VID	 0x2A03
+			#elif (PRODUCTID == ARDUINO_WIFI2_PID)
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 WiFi2"
+				// correct different VID (see megaavr boards.txt)
+				#undef ARDUINO_VID
+				#define ARDUINO_VID	 0x03eb
 			#else
 				#define USB_DESCRIPTOR_STRING L"HoodLoader2 Lufa"
 			#endif
@@ -150,13 +155,24 @@ extern "C" {
 			#elif defined(__AVR_ATmega32U4__)
 			
 			/** Pin that can reset the main MCU. */
-			// PORTB would also be possible (D8-11 + SPI)
-			// I will not use it since PB contains the only PCINT
-			// And the pins on PD are not better or worse
-			#define AVR_RESET_LINE_PORT PORTD
-			#define AVR_RESET_LINE_DDR DDRD
-			#define AVR_RESET_LINE_PIN PIND
-			#define AVR_RESET_LINE_MASK (1 << PD4) // PD4 = D4, PD6 = D12, PD7 = D7
+			#if (PRODUCTID == ARDUINO_WIFI2_PID)
+				// Use TRG_RSTSNS pin here which is connected
+				// to IO-MCUs RST pin via a 330 Ohm resistor
+				// PD4 works too, but I prefer PB5 to avoid short circuits
+				// e.g. when RST-switch is pressed or PF06 of IOMCU output
+				#define AVR_RESET_LINE_PORT PORTB
+				#define AVR_RESET_LINE_DDR DDRB
+				#define AVR_RESET_LINE_PIN PINB
+				#define AVR_RESET_LINE_MASK (1 << PB5) // PB5 = TRG_RSTSNS, PD4 = TRG_RST
+			#else
+				// PORTB would also be possible (D8-11 + SPI)
+				// I will not use it since PB contains the only PCINT
+				// And the pins on PD are not better or worse
+				#define AVR_RESET_LINE_PORT PORTD
+				#define AVR_RESET_LINE_DDR DDRD
+				#define AVR_RESET_LINE_PIN PIND
+				#define AVR_RESET_LINE_MASK (1 << PD4) // PD4 = D4, PD6 = D12, PD7 = D7
+			#endif
 
 			/* Pin that is used to de-/activate (0/1) Autoreset */
 			#define AUTORESET_PORT PORTB
