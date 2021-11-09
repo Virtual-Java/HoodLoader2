@@ -31,16 +31,17 @@ LTO          = Y
 FLASH_SIZE_KB         = 16
 BOOT_SECTION_SIZE_KB  = 4
 
-#define LUFA_VID					0x03EB
-#define LUFA_PID					0x204A
+#define LUFA_VID										0x03EB
+#define LUFA_PID										0x204A
 
-#define ARDUINO_VID					0x2341
-#define ARDUINO_UNO_PID				0x0043 // R3 (0001 R1)
-#define ARDUINO_MEGA_PID			0x0042 // R3 (0010 R1)
-#define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
-#define ARDUINO_LEONARDO_PID		0x0036 // Bootloader, not program!
-#define ARDUINO_MICRO_PID   		0x0037 // Bootloader, not program!
-#define ARDUINO_DUE_PID             0x003D
+#define ARDUINO_VID									0x2341
+#define ARDUINO_UNO_PID							0x0043 // R3 (0001 R1)
+#define ARDUINO_UNO_WIFI_PID				0x0057
+#define ARDUINO_MEGA_PID						0x0042 // R3 (0010 R1)
+#define ARDUINO_MEGA_ADK_PID				0x0044 // R3 (003F R1)
+#define ARDUINO_LEONARDO_PID				0x0036 // Bootloader, not program!
+#define ARDUINO_MICRO_PID						0x0037 // Bootloader, not program!
+#define ARDUINO_DUE_PID							0x003D
 
 HOODLOADER2_OPTS  = -DVENDORID=ARDUINO_VID
 HOODLOADER2_OPTS += -DPRODUCTID=ARDUINO_UNO_PID

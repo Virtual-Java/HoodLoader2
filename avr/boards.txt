@@ -410,6 +410,41 @@ unoHIDBridge.build.variant=arduino:standard
 ##############################################################
 
 
+unowifiHIDBridge.name=HoodLoader2 WiFi
+
+unowifiHIDBridge.upload.tool=arduino:avrdude
+unowifiHIDBridge.upload.protocol=arduino
+unowifiHIDBridge.upload.maximum_size=32256
+unowifiHIDBridge.upload.maximum_data_size=2048
+unowifiHIDBridge.upload.speed=115200
+unowifiHIDBridge.upload.use_1200bps_touch=true
+unowifiHIDBridge.upload.wait_for_upload_port=true
+unowifiHIDBridge.upload.network.endpoint_upload=/pgm/upload
+unowifiHIDBridge.upload.network.endpoint_sync=/pgm/sync
+unowifiHIDBridge.upload.network.sync_return=204:SYNC
+unowifiHIDBridge.upload.network.endpoint_reset=/log/reset
+unowifiHIDBridge.upload.network.port=80
+
+unowifiHIDBridge.bootloader.tool=arduino:avrdude
+unowifiHIDBridge.bootloader.low_fuses=0xFF
+unowifiHIDBridge.bootloader.high_fuses=0xDE
+unowifiHIDBridge.bootloader.extended_fuses=0x05
+unowifiHIDBridge.bootloader.unlock_bits=0x3F
+unowifiHIDBridge.bootloader.lock_bits=0x0F
+unowifiHIDBridge.bootloader.file=HexFiles/optiboot_atmega328.hex
+
+unowifiHIDBridge.build.mcu=atmega328p
+unowifiHIDBridge.build.f_cpu=16000000L
+unowifiHIDBridge.build.board=AVR_UNO_WIFI_DEV_ED
+unowifiHIDBridge.build.core=arduino:arduino
+unowifiHIDBridge.build.variant=arduino:standard
+unowifiHIDBridge.build.build.esp_ch_uart_br=19200
+unowifiHIDBridge.build.build.extra_flags=-DESP_CH_UART -DESP_CH_UART_BR={build.esp_ch_uart_br}
+
+
+##############################################################
+
+
 megaHIDBridge.name=HoodLoader2 Mega 2560
 
 megaHIDBridge.upload.tool=arduino:avrdude

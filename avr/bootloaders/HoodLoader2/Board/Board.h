@@ -46,32 +46,39 @@ extern "C" {
 			#define BOARD_HAS_LEDS
 			
 			// USB VID/PID settings
-			#define LUFA_VID					0x03EB
-			#define LUFA_PID					0x204A
+			#define LUFA_VID                    0x03EB
+			#define LUFA_PID                    0x204A
 
-			#define ARDUINO_VID					0x2341
-			#define ARDUINO_UNO_PID				0x0043 // R3 (0001 R1)
-			#define ARDUINO_MEGA_PID			0x0042 // R3 (0010 R1)
-			#define ARDUINO_MEGA_ADK_PID		0x0044 // R3 (003F R1)
-			#define ARDUINO_LEONARDO_PID		0x0036 // Bootloader, not program!
-			#define ARDUINO_MICRO_PID   		0x0037 // Bootloader, not program!
+			#define ARDUINO_VID                 0x2341
+			#define ARDUINO_UNO_PID             0x0043 // R3 (0001 R1)
+			#define ARDUINO_UNO_WIFI_PID        0x0057
+			#define ARDUINO_MEGA_PID            0x0042 // R3 (0010 R1)
+			#define ARDUINO_MEGA_ADK_PID        0x0044 // R3 (003F R1)
+			#define ARDUINO_LEONARDO_PID        0x0036 // Bootloader, not program!
+			#define ARDUINO_MICRO_PID           0x0037 // Bootloader, not program!
 			#define ARDUINO_DUE_PID             0x003D
+
 			
 			// USB product string settings
 			#if (PRODUCTID == ARDUINO_UNO_PID)
-			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Uno"
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 Uno"
 			#elif (PRODUCTID == ARDUINO_MEGA_PID)
-			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Mega"
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 Mega"
 			#elif (PRODUCTID == ARDUINO_ADK_PID)
-			#define USB_DESCRIPTOR_STRING L"HoodLoader2 ADK"
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 ADK"
 			#elif (PRODUCTID == ARDUINO_LEONARDO_PID)
-			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Leo"
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 Leo"
 			#elif (PRODUCTID == ARDUINO_MICRO_PID)
-			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Micro"
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 Micro"
 			#elif (PRODUCTID == ARDUINO_DUE_PID)
-			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Due"
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 Due"
+			#elif (PRODUCTID == ARDUINO_WIFI_PID)
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 WiFi"
+				// correct different VID (see official boards.txt)
+				#undef ARDUINO_VID
+				#define ARDUINO_VID	 0x2A03
 			#else
-			#define USB_DESCRIPTOR_STRING L"HoodLoader2 Lufa"
+				#define USB_DESCRIPTOR_STRING L"HoodLoader2 Lufa"
 			#endif
 			
 			// Arduino Due 16u2
