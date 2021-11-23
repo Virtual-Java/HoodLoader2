@@ -29,7 +29,7 @@ this software.
 */
 
 /*
-Copyright(c) 2014-2015 NicoHood
+Copyright(c) 2014-2018 NicoHood
 See the readme for credit to other people.
 
 This file is part of Hoodloader2.
@@ -49,9 +49,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /** \file
-*
-*  Main source file for the CDC class bootloader. This file contains the complete bootloader logic.
-*/
+ *
+ *  Main source file for the CDC class bootloader. This file contains the complete bootloader logic.
+ */
 
 #define  INCLUDE_FROM_BOOTLOADERCDC_C
 #include "HoodLoader2.h"
@@ -118,7 +118,7 @@ static uint8_t mode = MODE_OFF;
 // 0x280 is reserved by the makefile (right after out buffers) and 0x8000 should not be used anyways
 // To avoid problems inside the sketch a newer methode with RAMEND was introduced with HL2.0.5
 // for the u2 series only (to save flash with the 32u4)
-volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
+static volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
 
 // Backwardscompatibility with old Bootkey (adds 20 bytes of flash)
 // Undef to save flash for 32u4 devices
@@ -128,9 +128,9 @@ volatile uint8_t *const MagicBootKeyPtr = (volatile uint8_t *)BOOTKEY;
 #if (BAUDRATE_CDC_BOOTLOADER != 57600)
 #undef SECOND_BOOTKEY
 #elif defined(__AVR_ATmega32U4__)
-volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)0x8000;
+static volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)0x8000;
 #else
-volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)SECOND_BOOTKEY;
+static volatile uint8_t *const SecondMagicBootKeyPtr = (volatile uint8_t *)SECOND_BOOTKEY;
 #endif
 
 /** Magic bootloader key to unlock forced application start mode. */
@@ -155,7 +155,7 @@ void Application_Jump_Check(void)
 #endif
 
 	// Check the reason for the reset so we can act accordingly
-	uint8_t  mcusr_state = MCUSR;		// store the initial state of the Status register
+	uint8_t mcusr_state = MCUSR;		// store the initial state of the Status register
 	MCUSR = 0;							// clear all reset flags
 
 	/* Disable watchdog if enabled by bootloader/fuses */
@@ -202,7 +202,7 @@ void Application_Jump_Check(void)
 			}
 		}
 
-		// On a power-on reset, we ALWAYS want to go to the sketch. If there is one.
+		// On a power-on reset, we ALWAYS want to go to the sketch if there is one.
 		else if ((mcusr_state & (1 << PORF))){
 			if(!POWER_ON_TO_BOOTLOADER){
 				StartSketch();
@@ -247,7 +247,6 @@ static void ResetMCU(void){
 	wdt_enable(WDTO_250MS);
 	while(true);
 }
-
 
 /** Main program entry point. This routine configures the hardware required by the bootloader, then continuously
 *  runs the bootloader processing routine until instructed to soft-exit, or hard-reset via the watchdog to start
@@ -358,7 +357,7 @@ int main(void)
 
 					// Enable USART again to flush the buffer
 					UCSR1B = (_BV(RXCIE1) | _BV(TXEN1) | _BV(RXEN1) | _BV(UDRIE1));
-					
+
 					// Force Leds to turn on
 					USBtoUSART_free = 0;
 				}
@@ -479,21 +478,20 @@ static void SetupHardware(void)
 
 	/* Start the flush timer for Leds */
 	TCCR0B = (1 << CS02); // clk I/O / 256 (From prescaler)
-	
+
 	// Inits Serial pins, leds, reset and erase pins
 	// No need to turn off Leds, this is done in the bootkey check function
 	Board_Init();
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready
-*  to relay data to and from the attached USB host.
-*/
+ *  to relay data to and from the attached USB host.
+ */
 void EVENT_USB_Device_ConfigurationChanged(void)
 {
 	/* Setup CDC Notification, Rx and Tx Endpoints */
 	Endpoint_ConfigureEndpoint(CDC_NOTIFICATION_EPADDR, EP_TYPE_INTERRUPT,
-		CDC_NOTIFICATION_EPSIZE, 1
-	);
+	                           CDC_NOTIFICATION_EPSIZE, 1);
 
 	Endpoint_ConfigureEndpoint(CDC_TX_EPADDR, EP_TYPE_BULK, CDC_TX_EPSIZE, CDC_TX_BANK_SIZE);
 
@@ -501,14 +499,14 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 }
 
 /** Event handler for the USB_ControlRequest event. This is used to catch and process control requests sent to
-*  the device from the USB host before passing along unhandled control requests to the library for processing
-*  internally.
-*/
+ *  the device from the USB host before passing along unhandled control requests to the library for processing
+ *  internally.
+ */
 void EVENT_USB_Device_ControlRequest(void)
 {
 	/* Ignore any requests that aren't directed to the CDC interface */
 	if ((USB_ControlRequest.bmRequestType & (CONTROL_REQTYPE_TYPE | CONTROL_REQTYPE_RECIPIENT)) !=
-	(REQTYPE_CLASS | REQREC_INTERFACE))
+	    (REQTYPE_CLASS | REQREC_INTERFACE))
 	{
 		return;
 	}
@@ -646,12 +644,118 @@ ISR(USART1_UDRE_vect, ISR_NAKED)
 	);
 }
 
+#if !defined(NO_BLOCK_SUPPORT)
+/** Reads or writes a block of EEPROM or FLASH memory to or from the appropriate CDC data endpoint, depending
+ *  on the AVR109 protocol command issued.
+ *
+ *  \param[in] Command  Single character AVR109 protocol command indicating what memory operation to perform
+ */
+static void ReadWriteMemoryBlock(const uint8_t Command)
+{
+	uint16_t BlockSize;
+	char     MemoryType;
+
+	uint8_t  HighByte = 0;
+	uint8_t  LowByte  = 0;
+
+	BlockSize  = (FetchNextCommandByte() << 8);
+	BlockSize |=  FetchNextCommandByte();
+
+	MemoryType =  FetchNextCommandByte();
+
+	if ((MemoryType != MEMORY_TYPE_FLASH) && (MemoryType != MEMORY_TYPE_EEPROM))
+	{
+		/* Send error byte back to the host */
+		WriteNextResponseByte('?');
+
+		return;
+	}
+
+	/* Check if command is to read a memory block */
+	if (Command == AVR109_COMMAND_BlockRead)
+	{
+		while (BlockSize--)
+		{
+			if (MemoryType == MEMORY_TYPE_FLASH)
+			{
+				/* Read the next FLASH byte from the current FLASH page */
+				#if (FLASHEND > 0xFFFF)
+				WriteNextResponseByte(pgm_read_byte_far(CurrAddress | HighByte));
+				#else
+				WriteNextResponseByte(pgm_read_byte(CurrAddress | HighByte));
+				#endif
+
+				/* If both bytes in current word have been read, increment the address counter */
+				if (HighByte)
+				  CurrAddress += 2;
+
+				HighByte = !HighByte;
+			}
+			else
+			{
+				/* Read the next EEPROM byte into the endpoint */
+				WriteNextResponseByte(eeprom_read_byte((uint8_t*)(intptr_t)(CurrAddress >> 1)));
+
+				/* Increment the address counter after use */
+				CurrAddress += 2;
+			}
+		}
+	}
+	else
+	{
+		uint32_t PageStartAddress = CurrAddress;
+
+		if (MemoryType == MEMORY_TYPE_FLASH)
+		  BootloaderAPI_ErasePage(PageStartAddress);
+
+		while (BlockSize--)
+		{
+			if (MemoryType == MEMORY_TYPE_FLASH)
+			{
+				/* If both bytes in current word have been written, increment the address counter */
+				if (HighByte)
+				{
+					/* Write the next FLASH word to the current FLASH page */
+					BootloaderAPI_FillWord(CurrAddress, ((FetchNextCommandByte() << 8) | LowByte));
+
+					/* Increment the address counter after use */
+					CurrAddress += 2;
+				}
+				else
+				{
+					LowByte = FetchNextCommandByte();
+				}
+
+				HighByte = !HighByte;
+			}
+			else
+			{
+				/* Write the next EEPROM byte from the endpoint */
+				eeprom_update_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
+
+				/* Increment the address counter after use */
+				CurrAddress += 2;
+			}
+		}
+
+		/* If in FLASH programming mode, commit the page after writing */
+		if (MemoryType == MEMORY_TYPE_FLASH)
+		{
+			/* Commit the flash page to memory */
+			BootloaderAPI_WritePage(PageStartAddress);
+		}
+
+		/* Send response byte back to the host */
+		WriteNextResponseByte('\r');
+	}
+}
+#endif
 
 /** Retrieves the next byte from the host in the CDC data OUT endpoint, and clears the endpoint bank if needed
-*  to allow reception of the next data packet from the host.
-*
-*  \return Next received byte from the host in the CDC data OUT endpoint
-*/
+ *  to allow reception of the next data packet from the host.
+ *
+ *  \return Next received byte from the host in the CDC data OUT endpoint
+ */
 static uint8_t FetchNextCommandByte(void)
 {
 	/* Select the OUT endpoint so that the next data byte can be read */
@@ -662,11 +766,11 @@ static uint8_t FetchNextCommandByte(void)
 	{
 		Endpoint_ClearOUT();
 
-		do
+		while (!(Endpoint_IsOUTReceived()))
 		{
 			if (USB_DeviceState == DEVICE_STATE_Unattached)
-			return 0;
-		}while (!(Endpoint_IsOUTReceived()));
+			  return 0;
+		}
 	}
 
 	/* Fetch the next byte from the OUT endpoint */
@@ -674,10 +778,10 @@ static uint8_t FetchNextCommandByte(void)
 }
 
 /** Writes the next response byte to the CDC data IN endpoint, and sends the endpoint back if needed to free up the
-*  bank when full ready for the next byte in the packet to the host.
-*
-*  \param[in] Response  Next response byte to send to the host
-*/
+ *  bank when full ready for the next byte in the packet to the host.
+ *
+ *  \param[in] Response  Next response byte to send to the host
+ */
 static void WriteNextResponseByte(const uint8_t Response)
 {
 	/* Select the IN endpoint so that the next data byte can be written */
@@ -723,7 +827,7 @@ static void Bootloader_Task(){
 		WriteNextResponseByte('\r');
 	}
 	else if ((Command == AVR109_COMMAND_SetLED) || (Command == AVR109_COMMAND_ClearLED) ||
-	(Command == AVR109_COMMAND_SelectDeviceType))
+	         (Command == AVR109_COMMAND_SelectDeviceType))
 	{
 		FetchNextCommandByte();
 
@@ -749,8 +853,8 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_SetCurrentAddress)
 	{
 		/* Set the current address to that given by the host (translate 16-bit word address to byte address) */
-		CurrAddress = (FetchNextCommandByte() << 9);
-		CurrAddress |= (FetchNextCommandByte() << 1);
+		CurrAddress   = (FetchNextCommandByte() << 9);
+		CurrAddress  |= (FetchNextCommandByte() << 1);
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -764,7 +868,7 @@ static void Bootloader_Task(){
 	{
 		/* Write the 7-byte software identifier to the endpoint */
 		for (uint8_t CurrByte = 0; CurrByte < 7; CurrByte++)
-		WriteNextResponseByte(SOFTWARE_IDENTIFIER[CurrByte]);
+		  WriteNextResponseByte(SOFTWARE_IDENTIFIER[CurrByte]);
 	}
 	else if (Command == AVR109_COMMAND_ReadBootloaderSWVersion)
 	{
@@ -781,12 +885,7 @@ static void Bootloader_Task(){
 	{
 		/* Clear the application section of flash */
 		for (uint32_t CurrFlashAddress = 0; CurrFlashAddress < (uint32_t)BOOT_START_ADDR; CurrFlashAddress += SPM_PAGESIZE)
-		{
-			boot_page_erase(CurrFlashAddress);
-			boot_spm_busy_wait();
-			boot_page_write(CurrFlashAddress);
-			boot_spm_busy_wait();
-		}
+			BootloaderAPI_ErasePage(CurrFlashAddress);
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -795,7 +894,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_WriteLockbits)
 	{
 		/* Set the lock bits to those given by the host */
-		boot_lock_bits_set(FetchNextCommandByte());
+		BootloaderAPI_WriteLock(FetchNextCommandByte());
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -803,19 +902,19 @@ static void Bootloader_Task(){
 	#endif
 	else if (Command == AVR109_COMMAND_ReadLockbits)
 	{
-		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_LOCK_BITS));
+		WriteNextResponseByte(BootloaderAPI_ReadLock());
 	}
 	else if (Command == AVR109_COMMAND_ReadLowFuses)
 	{
-		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_LOW_FUSE_BITS));
+		WriteNextResponseByte(BootloaderAPI_ReadFuse(GET_LOW_FUSE_BITS));
 	}
 	else if (Command == AVR109_COMMAND_ReadHighFuses)
 	{
-		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS));
+		WriteNextResponseByte(BootloaderAPI_ReadFuse(GET_HIGH_FUSE_BITS));
 	}
 	else if (Command == AVR109_COMMAND_ReadExtendedFuses)
 	{
-		WriteNextResponseByte(boot_lock_fuse_bits_get(GET_EXTENDED_FUSE_BITS));
+		WriteNextResponseByte(BootloaderAPI_ReadFuse(GET_EXTENDED_FUSE_BITS));
 	}
 	#if !defined(NO_BLOCK_SUPPORT)
 	else if (Command == AVR109_COMMAND_GetBlockWriteSupport)
@@ -836,7 +935,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_FillFlashPageWordHigh)
 	{
 		/* Write the high byte to the current flash page */
-		boot_page_fill(CurrAddress, FetchNextCommandByte());
+		BootloaderAPI_FillWord(CurrAddress, FetchNextCommandByte());
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -844,7 +943,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_FillFlashPageWordLow)
 	{
 		/* Write the low byte to the current flash page */
-		boot_page_fill(CurrAddress | 0x01, FetchNextCommandByte());
+		BootloaderAPI_FillWord(CurrAddress | 0x01, FetchNextCommandByte());
 
 		/* Increment the address */
 		CurrAddress += 2;
@@ -855,10 +954,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_WriteFlashPage)
 	{
 		/* Commit the flash page to memory */
-		boot_page_write(CurrAddress);
-
-		/* Wait until write operation has completed */
-		boot_spm_busy_wait();
+		BootloaderAPI_WritePage(CurrAddress);
 
 		/* Send confirmation byte back to the host */
 		WriteNextResponseByte('\r');
@@ -879,7 +975,7 @@ static void Bootloader_Task(){
 	else if (Command == AVR109_COMMAND_WriteEEPROM)
 	{
 		/* Read the byte from the endpoint and write it to the EEPROM */
-		eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
+		eeprom_update_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
 
 		/* Increment the address after use */
 		CurrAddress += 2;
@@ -929,121 +1025,6 @@ static void Bootloader_Task(){
 	Endpoint_ClearOUT();
 }
 
-#if !defined(NO_BLOCK_SUPPORT)
-/** Reads or writes a block of EEPROM or FLASH memory to or from the appropriate CDC data endpoint, depending
-*  on the AVR109 protocol command issued.
-*
-*  \param[in] Command  Single character AVR109 protocol command indicating what memory operation to perform
-*/
-static void ReadWriteMemoryBlock(const uint8_t Command)
-{
-	uint16_t BlockSize;
-	char     MemoryType;
-
-	uint8_t  HighByte = 0;
-	uint8_t  LowByte = 0;
-
-	BlockSize = (FetchNextCommandByte() << 8);
-	BlockSize |= FetchNextCommandByte();
-
-	MemoryType = FetchNextCommandByte();
-
-	if ((MemoryType != MEMORY_TYPE_FLASH) && (MemoryType != MEMORY_TYPE_EEPROM))
-	{
-		/* Send error byte back to the host */
-		WriteNextResponseByte('?');
-
-		return;
-	}
-
-	/* Check if command is to read a memory block */
-	if (Command == AVR109_COMMAND_BlockRead)
-	{
-		/* Re-enable RWW section */
-		boot_rww_enable();
-
-		while (BlockSize--)
-		{
-			if (MemoryType == MEMORY_TYPE_FLASH)
-			{
-				/* Read the next FLASH byte from the current FLASH page */
-				#if (FLASHEND > 0xFFFF)
-				WriteNextResponseByte(pgm_read_byte_far(CurrAddress | HighByte));
-				#else
-				WriteNextResponseByte(pgm_read_byte(CurrAddress | HighByte));
-				#endif
-
-				/* If both bytes in current word have been read, increment the address counter */
-				if (HighByte)
-				CurrAddress += 2;
-
-				HighByte = !HighByte;
-			}
-			else
-			{
-				/* Read the next EEPROM byte into the endpoint */
-				WriteNextResponseByte(eeprom_read_byte((uint8_t*)(intptr_t)(CurrAddress >> 1)));
-
-				/* Increment the address counter after use */
-				CurrAddress += 2;
-			}
-		}
-	}
-	else
-	{
-		uint32_t PageStartAddress = CurrAddress;
-
-		if (MemoryType == MEMORY_TYPE_FLASH)
-		{
-			boot_page_erase(PageStartAddress);
-			boot_spm_busy_wait();
-		}
-
-		while (BlockSize--)
-		{
-			if (MemoryType == MEMORY_TYPE_FLASH)
-			{
-				/* If both bytes in current word have been written, increment the address counter */
-				if (HighByte)
-				{
-					/* Write the next FLASH word to the current FLASH page */
-					boot_page_fill(CurrAddress, ((FetchNextCommandByte() << 8) | LowByte));
-
-					/* Increment the address counter after use */
-					CurrAddress += 2;
-				}
-				else
-				{
-					LowByte = FetchNextCommandByte();
-				}
-
-				HighByte = !HighByte;
-			}
-			else
-			{
-				/* Write the next EEPROM byte from the endpoint */
-				eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
-
-				/* Increment the address counter after use */
-				CurrAddress += 2;
-			}
-		}
-
-		/* If in FLASH programming mode, commit the page after writing */
-		if (MemoryType == MEMORY_TYPE_FLASH)
-		{
-			/* Commit the flash page to memory */
-			boot_page_write(PageStartAddress);
-
-			/* Wait until write operation has completed */
-			boot_spm_busy_wait();
-		}
-
-		/* Send response byte back to the host */
-		WriteNextResponseByte('\r');
-	}
-}
-#endif
 
 /** Event handler for the CDC Class driver Line Encoding Changed event.
 *

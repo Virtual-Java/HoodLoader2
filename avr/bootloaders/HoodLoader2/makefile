@@ -19,9 +19,10 @@ F_USB        = $(F_CPU)
 OPTIMIZATION = s
 TARGET       = HoodLoader2
 SRC          = $(TARGET).c Descriptors.c BootloaderAPI.c BootloaderAPITable.S $(LUFA_SRC_USB)
-LUFA_PATH    = ../lufa-LUFA-140928/LUFA
-CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS) -flto -fuse-linker-plugin
-LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS) -flto -fuse-linker-plugin
+LUFA_PATH    = ../lufa-LUFA-170418/LUFA
+CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/ $(HOODLOADER2_OPTS) -DBOOT_START_ADDR=$(BOOT_START_OFFSET) $(REGS)
+LD_FLAGS     = -Wl,--section-start=.text=$(BOOT_START_OFFSET) $(BOOT_API_LD_FLAGS),--section-start=.data=$(RAM_OFFSET) $(REGS)
+LTO          = Y
 
 
 # Flash size and bootloader section sizes of the target, in KB. These must
@@ -55,6 +56,30 @@ HOODLOADER2_OPTS += -DDOUBLE_TAB_RESET_TO_BOOTLOADER=true
 
 # Select if you want to start the bootloader when powered on (plugged in the usb cable)
 HOODLOADER2_OPTS += -DPOWER_ON_TO_BOOTLOADER=false
+
+# Option to disable autoreset via jumper on pin 6 (u2 Series) or pin 8 (32u4)
+# Pull the pin low to disable autoreset. You may change the pin in the Board.h file
+#HOODLOADER2_OPTS += -DAUTORESET_JUMPER
+
+
+# Arduino modifications to support DebugWire:
+#  SoftwareReset:
+#   Due to SoftwareReset it is possible to optionally replace the capacitor
+#   between DTR (pin 20) of the USB MCU and RESET pin (PB6) of the main MCU by a resistor.
+#   This enables ISP programming without a bypass capacitor of 10 μF
+#   which is usually needed to be connected to main MCU's RESET and GND.
+#   Furthermore it does not affect upload to Arduinos with capacitor! (==> enabled by default)
+HOODLOADER2_OPTS += -DUSING_SOFTWARE_RESET # needs 4 Bytes of flash memory only
+
+#  PowerSwitch:
+#   A Mosfet is soldered between +5V and the output of the voltage regulator
+#   to switch on/off power supply of the main MCU by software running on USB MCU.
+#   Besides the power supply of the USB MCU is not affected.
+#   The default VCCEN pin to control the active low p-channel mosfet is PB5. (set to output!!!)
+#HOODLOADER2_OPTS += -DWITH_VCC_ENABLE
+#   change this to true for n-ch Mosfet (tricky to use because of n-channels inflated GS-Voltage)
+#HOODLOADER2_OPTS += -DVCCEN_ACTIVE_HIGH=false # false (default) for p-ch Mosfet (recommanded)
+
 
 # Bootkey locations
 # 2nd Bootkey is not used for 32u4 devices (due to flash size)
@@ -95,11 +120,18 @@ BOOT_API_LD_FLAGS    += $(call BOOT_SECTION_LD_FLAG, .apitable_signatures,  Boot
 # Default target
 all:
 
-# Include LUFA build script makefiles
-include $(LUFA_PATH)/Build/lufa_core.mk
-include $(LUFA_PATH)/Build/lufa_sources.mk
-include $(LUFA_PATH)/Build/lufa_build.mk
-include $(LUFA_PATH)/Build/lufa_cppcheck.mk
-include $(LUFA_PATH)/Build/lufa_doxygen.mk
-include $(LUFA_PATH)/Build/lufa_avrdude.mk
-include $(LUFA_PATH)/Build/lufa_atprogram.mk
+# Include LUFA-specific DMBS extension modules
+DMBS_LUFA_PATH ?= $(LUFA_PATH)/Build/LUFA
+include $(DMBS_LUFA_PATH)/lufa-sources.mk
+include $(DMBS_LUFA_PATH)/lufa-gcc.mk
+
+# Include common DMBS build system modules
+DMBS_PATH      ?= $(LUFA_PATH)/Build/DMBS/DMBS
+include $(DMBS_PATH)/core.mk
+include $(DMBS_PATH)/cppcheck.mk
+include $(DMBS_PATH)/doxygen.mk
+include $(DMBS_PATH)/dfu.mk
+include $(DMBS_PATH)/gcc.mk
+include $(DMBS_PATH)/hid.mk
+include $(DMBS_PATH)/avrdude.mk
+include $(DMBS_PATH)/atprogram.mk

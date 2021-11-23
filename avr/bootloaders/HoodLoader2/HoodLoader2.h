@@ -29,7 +29,7 @@
 */
 
 /*
-Copyright(c) 2014-2015 NicoHood
+Copyright(c) 2014-2018 NicoHood
 See the readme for credit to other people.
 
 This file is part of Hoodloader2.
@@ -96,7 +96,7 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#define BOOTLOADER_HWVERSION_MINOR   0x00
 
 		/** Eight character bootloader firmware identifier reported to the host when requested. */
-		#define SOFTWARE_IDENTIFIER          "HL2.0.5"
+		#define SOFTWARE_IDENTIFIER          "HL2.0.6"
 
 	/* Enums: */
 		/** Possible memory types that can be addressed via the bootloader. */
@@ -165,4 +165,3 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 		#endif
 
 #endif
-

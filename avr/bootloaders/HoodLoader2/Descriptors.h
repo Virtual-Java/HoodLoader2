@@ -29,7 +29,7 @@
 */
 
 /*
-Copyright(c) 2014-2015 NicoHood
+Copyright(c) 2014-2018 NicoHood
 See the readme for credit to other people.
 
 This file is part of Hoodloader2.
@@ -123,9 +123,9 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 		/** Size of the CDC data interface TX and RX data endpoint banks, in bytes. */
 		#define CDC_TX_EPSIZE                64
-#define CDC_TX_BANK_SIZE 2
+		#define CDC_TX_BANK_SIZE 2
 		#define CDC_RX_EPSIZE                32
-#define CDC_RX_BANK_SIZE 1
+		#define CDC_RX_BANK_SIZE 1
 
 		/** Size of the CDC control interface notification endpoint bank, in bytes. */
 		#define CDC_NOTIFICATION_EPSIZE        8
@@ -175,9 +175,8 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 	/* Function Prototypes: */
 		uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
-		                                    const uint8_t wIndex,
+		                                    const uint16_t wIndex,
 		                                    const void** const DescriptorAddress)
 		                                    ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
 
 #endif
-

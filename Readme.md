@@ -5,7 +5,7 @@ HoodLoader2.0.5
 
 **HoodLoader2 is a CDC BootLoader with self reprogramming and Fast USB-Serial function.**
 
-An Arduino Uno/Mega board has two Microcontroller of which one(16u2) is normally used for USB-Serial translation.
+An Arduino Uno/Mega board has two Microcontrollers of which one(16u2) is normally used for USB-Serial translation.
 But we can also use it as standalone AVR Microcontroller with (or without) USB functions as well.
 
 HoodLoader2 gives you the option to **reprogram the 16u2** of a normal Arduino Uno/Mega R3 with **custom sketches**.
@@ -45,6 +45,16 @@ www.nicohood.de
 Version History
 ===============
 ```
+2.0.6 Release (xx.xx.20xx)
+* Added examples to the IDE menu
+* Added IDE version warning
+* Fixed Leonardo/Micro board definitions
+* Use LUFA builtin LTO option
+TODO make Magic Bootkey static
+TODO Descriptor switch case -> if/else
+TODO try ORDERED_EP_CONFIG option to reduce code size even more
+TODO update lufa to latest version
+
 2.0.5 Release (26.09.2015)
 * No need for HID-Project anymore, PR3640 added u2 support to IDE 1.6.6
 * Added up to 2M baud support (thx to https://github.com/urjaman/fast-usbserial)

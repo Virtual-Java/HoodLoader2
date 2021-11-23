@@ -53,6 +53,10 @@ along with Hoodloader2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr/pgmspace.h>
 
+#if ARDUINO < 10606
+#error HoodLoader2 requires Arduino IDE 1.6.6 or greater. Please update your IDE.
+#endif
+
 /** LED mask for the first LED on the board. */
 #define LEDS_LED1        (1 << 5)
 
