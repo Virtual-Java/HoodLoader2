@@ -357,6 +357,11 @@ HoodLoader2atmega32u4.menu.board.micro.bootloader.file=HexFiles/HoodLoader2_0_6_
 HoodLoader2atmega32u4.menu.board.micro.build.variant=arduino:micro
 HoodLoader2atmega32u4.menu.board.micro.build.pid=0x8037
 HoodLoader2atmega32u4.menu.board.micro.build.board=AVR_MICRO
+HoodLoader2atmega32u4.menu.board.uno2018=HoodLoader2 Uno WIFI2
+HoodLoader2atmega32u4.menu.board.uno2018.bootloader.file=HexFiles/HoodLoader2_0_6_Uno_WiFi2_atmega32u4.hex
+HoodLoader2atmega32u4.menu.board.uno2018.build.variant=arduino:uno2018
+HoodLoader2atmega32u4.menu.board.uno2018.build.pid=0x2145
+HoodLoader2atmega32u4.menu.board.uno2018.build.board=AVR_UNO_WIFI_REV2
 HoodLoader2atmega32u4.menu.board.dev=HoodLoader2 Dev
 HoodLoader2atmega32u4.menu.board.dev.bootloader.file=HoodLoader2/HoodLoader2.hex
 
@@ -446,51 +451,115 @@ unowifiHIDBridge.build.build.extra_flags=-DESP_CH_UART -DESP_CH_UART_BR={build.e
 
 uno2018HIDBridge.name=HoodLoader2 WiFi2
 
-uno2018HIDBridge.vid.0=0x03eb
-uno2018HIDBridge.pid.0=0x2145
-uno2018HIDBridge.upload_port.0.vid=0x03eb
-uno2018HIDBridge.upload_port.0.pid=0x2145
-uno2018HIDBridge.upload_port.1.board=uno2018
+# Upload
+#uno2018HIDBridge.vid.0=0x03eb
+#uno2018HIDBridge.pid.0=0x2145
+#uno2018HIDBridge.upload_port.0.vid=0x03eb
+#uno2018HIDBridge.upload_port.0.pid=0x2145
+#uno2018HIDBridge.upload_port.1.board=uno2018
 
 uno2018HIDBridge.upload.tool=arduino:avrdude
+#uno2018HIDBridge.upload.tool=avrdude
 uno2018HIDBridge.upload.protocol=arduino
-uno2018HIDBridge.upload.tool.default=avrdude
+#uno2018HIDBridge.upload.tool.default=avrdude
 ## not supported yet
-##uno2018HIDBridge.upload.tool.network=arduino_ota
-##uno2018HIDBridge.upload.protocol=xplainedmini_updi
+#uno2018HIDBridge.upload.tool.network=arduino_ota
 uno2018HIDBridge.upload.maximum_size=48640
 uno2018HIDBridge.upload.maximum_data_size=6144
 uno2018HIDBridge.upload.speed=115200
 uno2018HIDBridge.upload.use_1200bps_touch=true
 uno2018HIDBridge.upload.wait_for_upload_port=true
-##uno2018HIDBridge.upload.extra_params=-Pusb
-##uno2018HIDBridge.upload.extra_files="-Uflash:w:{runtime.platform.path}/bootloaders/{bootloader.file}:i"
+uno2018HIDBridge.upload.extra_params=
+#uno2018HIDBridge.upload.extra_params=-Pusb
+uno2018HIDBridge.upload.extra_files="-Uflash:w:{Hexfiles/optiboot_atmega4809_115200.hex}:i"
+#uno2018HIDBridge.upload.extra_files="-Uflash:w:{runtime.platform.path}/bootloaders/{bootloader.file}:i"
 
+# Build
 uno2018HIDBridge.build.mcu=atmega4809
 uno2018HIDBridge.build.f_cpu=16000000L
 uno2018HIDBridge.build.board=AVR_UNO_WIFI_REV2
-uno2018HIDBridge.build.core=arduino
-uno2018HIDBridge.build.variant=uno2018
+#uno2018HIDBridge.build.board=AVR_ATmega4809
+uno2018HIDBridge.build.core=arduino:arduino
+#uno2018HIDBridge.build.core=arduino
+#uno2018HIDBridge.build.core=coreX-corefiles
+uno2018HIDBridge.build.variant=arduino:uno2018
+#uno2018HIDBridge.build.variant=uno2018
 uno2018HIDBridge.build.text_section_start=.text=0x200
-uno2018HIDBridge.build.extra_flags={build.328emulation} -DMILLIS_USE_TIMERB3
+uno2018HIDBridge.build.extra_flags={build.328emulation} -DMILLIS_USE_TIMERB3 {build.oscillator} {build.compat} -B{runtime.tools.atpack.path}/gcc/dev/{build.mcu}
+#uno2018HIDBridge.build.extra_flags={build.328emulation} -DMILLIS_USE_TIMERB3
+#uno2018HIDBridge.build.extra_flags={build.oscillator} {build.compat}
 #uno2018HIDBridge.build.extra_flags=-B{runtime.tools.atpack.path}/gcc/dev/{build.mcu}
 
+# Bootloader
 uno2018HIDBridge.bootloader.tool=avrdude
 uno2018HIDBridge.bootloader.tool.default=avrdude
-uno2018HIDBridge.bootloader.file=atmega4809_uart_bl.hex
-uno2018HIDBridge.bootloader.SYSCFG0=0xC9
-uno2018HIDBridge.bootloader.BOOTEND=0x02
-uno2018HIDBridge.bootloader.OSCCFG=0x01
-uno2018HIDBridge.fuses.file=fuses_4809.bin
+#uno2018HIDBridge.bootloader.protocol=xplainedmini_updi
+# Add the path to Optibootloader ATmega4809 hex-file (version from MCUdude)
+uno2018HIDBridge.bootloader.file=Hexfiles/optiboot_atmega4809_115200.hex
+#uno2018HIDBridge.bootloader.file=Hexfiles/optiboot_atmega4809.hex
+#uno2018HIDBridge.bootloader.file=atmega4809_uart_bl.hex
+uno2018HIDBridge.bootloader.text_section_start=.text=0x200
+uno2018HIDBridge.bootloader.build.export_merged_output=true
 
+# Fuses
+uno2018HIDBridge.bootloader.WDTCFG=0x00
+uno2018HIDBridge.bootloader.BODCFG=0x54
+uno2018HIDBridge.bootloader.OSCCFG=0x01
+uno2018HIDBridge.bootloader.TCD0CFG=0x00
+uno2018HIDBridge.bootloader.SYSCFG0=0xC9
+uno2018HIDBridge.bootloader.SYSCFG1=0x06
+uno2018HIDBridge.bootloader.APPEND=0x00
+uno2018HIDBridge.bootloader.BOOTEND=0x02
+uno2018HIDBridge.bootloader.LOCKBIT=0xC5
+# No external clock available on Uno WiFi2
+uno2018HIDBridge.build.oscillator=
+
+# Registers emulation
 menu.mode=Registers emulation
 uno2018HIDBridge.menu.mode.on=ATMEGA328
 uno2018HIDBridge.menu.mode.on.build.328emulation=-DUNO_WIFI_REV2_328MODE
 uno2018HIDBridge.menu.mode.off=None (ATMEGA4809)
 uno2018HIDBridge.menu.mode.off.build.328emulation=
 
+
 ##############################################################
 
+uno2018.name=Arduino Uno WiFi Rev2
+
+uno2018.vid.0=0x03eb
+uno2018.pid.0=0x2145
+
+uno2018.upload.tool=avrdude
+uno2018.upload.protocol=xplainedmini_updi
+uno2018.upload.maximum_size=48640
+uno2018.upload.maximum_data_size=6144
+uno2018.upload.speed=115200
+uno2018.upload.extra_params=-Pusb
+uno2018.upload.extra_files="-Uflash:w:{runtime.platform.path}/bootloaders/{bootloader.file}:i"
+
+uno2018.build.mcu=atmega4809
+uno2018.build.f_cpu=16000000L
+uno2018.build.board=AVR_UNO_WIFI_REV2
+uno2018.build.core=arduino
+uno2018.build.variant=uno2018
+uno2018.build.text_section_start=.text=0x200
+uno2018.build.extra_flags={build.328emulation} -DMILLIS_USE_TIMERB3
+uno2018.build.extra_flags=-B{runtime.tools.atpack.path}/gcc/dev/{build.mcu}
+
+uno2018.bootloader.tool=avrdude
+uno2018.bootloader.file=atmega4809_uart_bl.hex
+uno2018.bootloader.SYSCFG0=0xC9
+uno2018.bootloader.BOOTEND=0x02
+uno2018.bootloader.OSCCFG=0x01
+uno2018.fuses.file=fuses_4809.bin
+
+menu.mode=Registers emulation
+uno2018.menu.mode.on=ATMEGA328
+uno2018.menu.mode.on.build.328emulation=-DUNO_WIFI_REV2_328MODE
+uno2018.menu.mode.off=None (ATMEGA4809)
+uno2018.menu.mode.off.build.328emulation=
+
+##############################################################
 
 megaHIDBridge.name=HoodLoader2 Mega 2560
 
@@ -516,3 +585,6 @@ megaHIDBridge.build.mcu=atmega2560
 megaHIDBridge.build.board=AVR_MEGA2560
 megaHIDBridge.build.variant=arduino:mega
 
+# See: https://arduino.github.io/arduino-cli/latest/platform-specification/
+
+##############################################################
